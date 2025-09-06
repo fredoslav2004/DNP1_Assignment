@@ -1,0 +1,16 @@
+@startuml DomainModel
+!include astah-min.puml
+class User {
+    +Id: int
+    +name
+    +password
+}
+class Post
+{
+    +Id: int
+    +title
+    +content
+    +authorId: int
+}
+Post "*" --> "1" User : made by
+@enduml
