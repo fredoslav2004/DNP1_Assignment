@@ -1,0 +1,6 @@
+namespace Entities;
+
+class Comment
+{
+    
+}
