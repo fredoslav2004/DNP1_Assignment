@@ -19,10 +19,11 @@ class Comment
     +Id: int
     +AuthorId: int
     +PostId: int
+    +Content: string
 }
 
 Post "*" --> "1" User : made by
-Comment "*" --> "1" User : made by
+Comment "*" --> "1" User : written by
 Comment "*" --> "1" Post : on
 
 @enduml
