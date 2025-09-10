@@ -1,6 +1,7 @@
 ' astah-bw-cleaner.puml — true black & white, no "C" icon
 
 hide circle
+skinparam linetype ortho
 
 skinparam Shadowing false
 skinparam BackgroundColor white
