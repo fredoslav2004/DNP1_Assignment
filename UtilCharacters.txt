@@ -1,0 +1,21 @@
+┌ ┬ ┐      
+├ ┼ ┤      
+└ ┴ ┘   
+
+┏ ┳ ┓
+┣ ╋ ┫
+┗ ┻ ┛
+
+╔ ╦ ╗
+╠ ╬ ╣
+╚ ╩ ╝
+
+│ ─ ┼    ║ ═ ╬
+
+█ ▓ ▒ ░          // full, 75%, 50%, 25% shading
+▏▎▍▌▋▊▉█         // 1/8-width blocks, build smooth horizontal bars
+▀ ▄              // upper and lower half blocks
+▇ ▆ ▅ ▃ ▂ ▁      // decreasing height bars
+
+◆ ◇ ◈ ▷ ◁ ▲ ▼ ▶ ◀
+○ ● ◉ ◎ ⊙
