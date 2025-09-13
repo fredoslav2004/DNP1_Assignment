@@ -16,7 +16,12 @@ public class HelpView : IView
             { "help", "Display this table again" },
             { "exit", "Exit the application" },
             { "feed", "View posts overview" },
-            { "users", "View users overview. Args: [add] <name> <password> | [rm] <userId>" }
+            { "users", "View users overview. Args: [add] <name> <password> | [rm] <userId>" },
+            { "posts", "View posts. Args: [add] <title> <body> <userId> | [rm] <postId>" },
+            { "dummy", "Add 5 dummy users, posts, and comments" },
+            { "max", "Maximize the console window" },
+            { "min", "Minimize the console window (just make smaller)" },
+            { "reset", "Use with argument db to reset the database" }
         });
 
         return Task.CompletedTask;

@@ -8,4 +8,5 @@ public interface IUserRepository
     Task DeleteAsync(int id); // Takes an ID and deletes the User or throws an exception if ID not present
     Task<User> GetSingleAsync(int id); // Takes an ID and returns the User or throws an exception if ID not present
     IQueryable<User> GetManyAsync(); // Returns all Users as IQueryable
+    Task ClearAsync();
 }

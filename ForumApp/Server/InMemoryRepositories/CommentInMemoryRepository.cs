@@ -48,4 +48,10 @@ public class CommentInMemoryRepository : ICommentRepository
     {
         return Comments.AsQueryable();
     }
+
+    public Task ClearAsync()
+    {
+        Comments.Clear();
+        return Task.CompletedTask;
+    }
 }

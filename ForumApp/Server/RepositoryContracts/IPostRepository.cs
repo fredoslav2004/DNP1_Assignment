@@ -8,4 +8,5 @@ public interface IPostRepository
     Task DeleteAsync(int id); // Takes an ID and deletes the post or throws an exception if ID not present
     Task<Post> GetSingleAsync(int id); // Takes an ID and returns the post or throws an exception if ID not present
     IQueryable<Post> GetManyAsync(); // Returns all posts as IQueryable
+    Task ClearAsync();
 }

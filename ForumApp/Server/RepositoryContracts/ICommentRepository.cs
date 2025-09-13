@@ -8,4 +8,5 @@ public interface ICommentRepository
     Task DeleteAsync(int id); // Takes an ID and deletes the Comment or throws an exception if ID not present
     Task<Comment> GetSingleAsync(int id); // Takes an ID and returns the Comment or throws an exception if ID not present
     IQueryable<Comment> GetManyAsync(); // Returns all Comments as IQueryable
+    Task ClearAsync();
 }

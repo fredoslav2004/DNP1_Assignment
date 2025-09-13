@@ -48,4 +48,10 @@ public class PostInMemoryRepository : IPostRepository
     {
         return posts.AsQueryable();
     }
+
+    public Task ClearAsync()
+    {
+        posts.Clear();
+        return Task.CompletedTask;
+    }
 }

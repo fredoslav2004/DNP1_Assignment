@@ -48,4 +48,10 @@ public class UserInMemoryRepository : IUserRepository
     {
         return Users.AsQueryable();
     }
+
+    public Task ClearAsync()
+    {
+        Users.Clear();
+        return Task.CompletedTask;
+    }
 }
