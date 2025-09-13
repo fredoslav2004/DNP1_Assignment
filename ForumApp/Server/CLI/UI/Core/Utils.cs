@@ -1,4 +1,5 @@
 using System;
+using System.Drawing;
 
 namespace CLI.UI.Core;
 
@@ -84,14 +85,16 @@ public class Utils
     }
     public static void PrintError(string message)
     {
+        var originalColor = Console.ForegroundColor;
         Console.ForegroundColor = ConsoleColor.Red;
         Console.WriteLine($"\n ⚠  {message}");
-        Console.ResetColor();
+        Console.ForegroundColor = originalColor;
     }
     public static void PrintInfo(string message)
     {
+        var originalColor = Console.ForegroundColor;
         Console.ForegroundColor = ConsoleColor.Blue;
         Console.WriteLine($"\n 🌐 {message}");
-        Console.ResetColor();
+        Console.ForegroundColor = originalColor;
     }
 }

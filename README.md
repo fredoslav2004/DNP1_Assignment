@@ -21,7 +21,7 @@ Based on the above requirements, you must create a domain model diagram, where w
 
 ## Must-have requirements:
 
-- Create new user (user name, password, etc) []
+- Create new user (user name, password, etc) [✓]
 - Create new post (title, body, user id) []
 - Add comment to existing post (body, user id, post id) []
 - View posts overview (just display [title, id] for each post) []
