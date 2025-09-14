@@ -98,27 +98,8 @@ public class Utils
         Console.WriteLine($"\n 🌐 {message}");
         Console.ForegroundColor = originalColor;
     }
-    const int SW_MAXIMIZE = 3;
-
-    [DllImport("kernel32.dll", SetLastError = true)]
-    private static extern IntPtr GetConsoleWindow();
-
-    [DllImport("user32.dll", SetLastError = true)]
-    private static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
-    
-    public static void MaximizeWindow()
-    {
-        var handle = GetConsoleWindow();
-        if (handle == IntPtr.Zero) return;
-
-        ShowWindow(handle, SW_MAXIMIZE);
-
-        // match buffer size to visible window
-        int w = Console.LargestWindowWidth;
-        int h = Console.LargestWindowHeight;
-#pragma warning disable CA1416
-        Console.SetBufferSize(w, h);
-        Console.SetWindowSize(w, h);
-#pragma warning restore CA1416
-    }
+#pragma warning disable CA1416 // Validate platform compatibility
+    public static void MaximizeWindow() => ConsoleWindow.Maximize();
+    public static void MinimizeWindow() => ConsoleWindow.Minimize();
+#pragma warning restore CA1416 // Validate platform compatibility
 }

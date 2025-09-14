@@ -155,14 +155,10 @@ public class CommandExecutor
                     }
                     break;
                 case "max":
-#pragma warning disable CA1416 // Validate platform compatibility
                     Utils.MaximizeWindow();
-#pragma warning restore CA1416 // Validate platform compatibility
                     break;
                 case "min":
-#pragma warning disable CA1416 // Validate platform compatibility
-                    Console.SetWindowSize(400, 400);
-#pragma warning restore CA1416 // Validate platform compatibility
+                    Utils.MinimizeWindow();
                     break;
                 case "dummy":
                     await UserRepository.AddAsync(Entities.User.GetDummy());
