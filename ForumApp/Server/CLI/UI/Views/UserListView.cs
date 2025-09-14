@@ -14,7 +14,7 @@ public class UserListView : IView
         var list = users.Select(u => new[] { u.Id.ToString(), u.Name, u.Password }).ToList();
 
         int rows = list.Count;
-        int cols = list[0].Length;
+        int cols = rows > 0 ? list[0].Length : 3;
         var rect = new string[rows + 1, cols];
         rect[0, 0] = " ◆ Id ◆ ";
         rect[0, 1] = " ◆ Name ◆ ";
