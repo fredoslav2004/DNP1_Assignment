@@ -105,11 +105,7 @@ public class Utils
 
     [DllImport("user32.dll", SetLastError = true)]
     private static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
-
-    /// <summary>
-    /// Maximizes the current console window and adjusts the buffer
-    /// so no scroll bars appear.
-    /// </summary>
+    
     public static void MaximizeWindow()
     {
         var handle = GetConsoleWindow();
@@ -120,9 +116,9 @@ public class Utils
         // match buffer size to visible window
         int w = Console.LargestWindowWidth;
         int h = Console.LargestWindowHeight;
-#pragma warning disable CA1416 // Validate platform compatibility
+#pragma warning disable CA1416
         Console.SetBufferSize(w, h);
         Console.SetWindowSize(w, h);
-#pragma warning restore CA1416 // Validate platform compatibility
+#pragma warning restore CA1416
     }
 }
