@@ -21,7 +21,8 @@ public class HelpView : IView
             { "dummy", "Add 5 dummy users, posts, and comments" },
             { "max", "Maximize the console window" },
             { "min", "Minimize the console window (just make smaller)" },
-            { "reset", "Use with argument db to reset the database" }
+            { "reset", "Use with argument db to reset the database" },
+            { "write", "Args [post|comment]. Opens a creation menu for the selected entity" }
         });
 
         return Task.CompletedTask;

@@ -191,6 +191,42 @@ public class CommandExecutor
                         postRender += () => Utils.PrintError($"Unknown argument '{args[0]}' for command 'reset'. Did you mean 'reset db'? Type 'help' to see available commands.");
                     }
                     break;
+                case "write":
+                    if (args.Length == 0)
+                    {
+                        postRender += () => Utils.PrintError($"You must provide an argument for the 'write' command. Example: 'write post' or 'write comment'");
+                    }
+                    else
+                    {
+                        if (args[0] == "post")
+                        {
+                            currentView = new CLI.UI.Views.PostCreationView()
+                            {
+                                PostRepository = PostRepository,
+                                UserRepository = UserRepository
+                            };
+                        }
+                    }
+                    break;
+                case "show":
+                case "view":
+                case "post":
+                    if (args.Length == 0 || !int.TryParse(args[0], out var viewPostId))
+                    {
+                        postRender += () => Utils.PrintError($"You must provide a valid post ID to view. Example: 'post 3'");
+                    }
+                    else
+                    {
+                        currentView = new CLI.UI.Views.PostView()
+                        {
+                            PostId = viewPostId,
+                            PostRepository = PostRepository,
+                            UserRepository = UserRepository,
+                            CommentRepository = CommentRepository
+                        };
+                        postRender += () => Utils.PrintInfo($"Post with ID {viewPostId} displayed.");
+                    }
+                    break;
                 default:
                     postRender += () => Utils.PrintError($"Unknown command '{command}'. Type 'help' to see available commands.");
                     break;
