@@ -24,8 +24,7 @@ public class PostView : IView
         }
         catch (Exception)
         {
-            Utils.PrintError($"Post with ID {PostId} not found.");
-            return;
+            Utils.PrintError($"Author of this post not found.");
         }
 
         Utils.DrawBox($"{post.Result.Id} - {post.Result.Title}", 100);
@@ -40,9 +39,13 @@ public class PostView : IView
         int i = 1;
         foreach (var comment in comments)
         {
-            var commentAuthor = UserRepository.GetSingleAsync(comment.AuthorId);
-            await commentAuthor;
-            table[i, 0] = commentAuthor.Result.Name;
+            Entities.User commentAuthor = new() { Name = "???", Id = -1, Password = "???" };
+            try
+            {
+                commentAuthor = await UserRepository.GetSingleAsync(comment.AuthorId);
+            }
+            catch (Exception) { }
+            table[i, 0] = commentAuthor.Name;
             table[i, 1] = comment.Content;
             i++;
         }
