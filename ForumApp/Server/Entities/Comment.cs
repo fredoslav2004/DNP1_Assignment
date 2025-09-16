@@ -5,7 +5,7 @@ public class Comment : IIdentifiable
     public int Id { get; set; }
     public int AuthorId { get; set; }
     public int PostId { get; set; }
-    public string Content { get; set; }
+    public required string Content { get; set; }
     public static Comment GetDummy()
     {
         var rnd = new Random();

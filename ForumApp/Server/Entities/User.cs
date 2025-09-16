@@ -3,8 +3,8 @@
 public class User : IIdentifiable
 {
     public int Id { get; set; }
-    public string Name { get; set; }
-    public string Password { get; set; }
+    public required string Name { get; set; }
+    public required string Password { get; set; }
     public static User GetDummy()
     {
         var rnd = new Random();
