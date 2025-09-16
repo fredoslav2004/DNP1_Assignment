@@ -1,15 +1,16 @@
 using System;
 using System.Threading.Tasks;
 using CLI.UI.Core;
+using Entities;
 using RepositoryContracts;
 
 namespace CLI;
 
 public class CommandExecutor
 {
-    public required IUserRepository UserRepository { private get; init; }
-    public required ICommentRepository CommentRepository { private get; init; }
-    public required IPostRepository PostRepository { private get; init; }
+    public required IRepository<User> UserRepository { private get; init; }
+    public required IRepository<Comment> CommentRepository { private get; init; }
+    public required IRepository<Post> PostRepository { private get; init; }
 
     private IView currentView = new CLI.UI.Views.HelpView();
 
@@ -56,7 +57,7 @@ public class CommandExecutor
                         switch (args[0].ToLower())
                         {
                             case "add":
-                                var _newUser = await UserRepository.AddAsync(new Entities.User
+                                var _newUser = await UserRepository.AddAsync(new User
                                 {
                                     Name = args.Length > 1 ? args[1] : "NewUser",
                                     Password = args.Length > 2 ? args[2] : "NewPassword"
@@ -122,7 +123,7 @@ public class CommandExecutor
                         switch (args[0].ToLower())
                         {
                             case "add":
-                                var _newPost = await PostRepository.AddAsync(new Entities.Post
+                                var _newPost = await PostRepository.AddAsync(new Post
                                 {
                                     Title = args.Length > 1 ? args[1] : "New Post",
                                     Content = args.Length > 2 ? args[2] : "This is a new post.",
@@ -161,21 +162,21 @@ public class CommandExecutor
                     Utils.MinimizeWindow();
                     break;
                 case "dummy":
-                    await UserRepository.AddAsync(Entities.User.GetDummy());
-                    await UserRepository.AddAsync(Entities.User.GetDummy());
-                    await UserRepository.AddAsync(Entities.User.GetDummy());
-                    await UserRepository.AddAsync(Entities.User.GetDummy());
-                    await UserRepository.AddAsync(Entities.User.GetDummy());
-                    await CommentRepository.AddAsync(Entities.Comment.GetDummy());
-                    await CommentRepository.AddAsync(Entities.Comment.GetDummy());
-                    await CommentRepository.AddAsync(Entities.Comment.GetDummy());
-                    await CommentRepository.AddAsync(Entities.Comment.GetDummy());
-                    await CommentRepository.AddAsync(Entities.Comment.GetDummy());
-                    await PostRepository.AddAsync(Entities.Post.GetDummy());
-                    await PostRepository.AddAsync(Entities.Post.GetDummy());
-                    await PostRepository.AddAsync(Entities.Post.GetDummy());
-                    await PostRepository.AddAsync(Entities.Post.GetDummy());
-                    await PostRepository.AddAsync(Entities.Post.GetDummy());
+                    await UserRepository.AddAsync(User.GetDummy());
+                    await UserRepository.AddAsync(User.GetDummy());
+                    await UserRepository.AddAsync(User.GetDummy());
+                    await UserRepository.AddAsync(User.GetDummy());
+                    await UserRepository.AddAsync(User.GetDummy());
+                    await CommentRepository.AddAsync(Comment.GetDummy());
+                    await CommentRepository.AddAsync(Comment.GetDummy());
+                    await CommentRepository.AddAsync(Comment.GetDummy());
+                    await CommentRepository.AddAsync(Comment.GetDummy());
+                    await CommentRepository.AddAsync(Comment.GetDummy());
+                    await PostRepository.AddAsync(Post.GetDummy());
+                    await PostRepository.AddAsync(Post.GetDummy());
+                    await PostRepository.AddAsync(Post.GetDummy());
+                    await PostRepository.AddAsync(Post.GetDummy());
+                    await PostRepository.AddAsync(Post.GetDummy());
                     postRender += () => Utils.PrintInfo("5 dummy users, posts, and comments added.");
                     break;
                 case "reset":
@@ -222,7 +223,7 @@ public class CommandExecutor
                                 else
                                 {
                                     var commentContent = string.Join(' ', args[3..]);
-                                    var newComment = await CommentRepository.AddAsync(new Entities.Comment
+                                    var newComment = await CommentRepository.AddAsync(new Comment
                                     {
                                         PostId = postId,
                                         AuthorId = userId,

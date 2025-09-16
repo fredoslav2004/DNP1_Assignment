@@ -1,14 +1,15 @@
 using System;
 using CLI.UI.Core;
+using Entities;
 using RepositoryContracts;
 
 namespace CLI.UI.Views;
 
 public class PostView : IView
 {
-    public required IPostRepository PostRepository { get; set; }
-    public required ICommentRepository CommentRepository { get; set; }
-    public required IUserRepository UserRepository { get; set; }
+    public required IRepository<Post> PostRepository { get; set; }
+    public required IRepository<Comment> CommentRepository { get; set; }
+    public required IRepository<User> UserRepository { get; set; }
     public required int PostId { get; init; }
 
     public async Task RenderAsync()
@@ -17,7 +18,7 @@ public class PostView : IView
         var comments = CommentRepository.GetManyAsync().Where(c => c.PostId == PostId);
 
         await post;
-        Entities.User author = new() { Name = "???", Id = -1, Password = "???" };
+        User author = new() { Name = "???", Id = -1, Password = "???" };
         try
         {
             author = await UserRepository.GetSingleAsync(post.Result.AuthorId);
@@ -39,7 +40,7 @@ public class PostView : IView
         int i = 1;
         foreach (var comment in comments)
         {
-            Entities.User commentAuthor = new() { Name = "???", Id = -1, Password = "???" };
+            User commentAuthor = new() { Name = "???", Id = -1, Password = "???" };
             try
             {
                 commentAuthor = await UserRepository.GetSingleAsync(comment.AuthorId);

@@ -1,12 +1,13 @@
 using System;
 using CLI.UI.Core;
+using Entities;
 using RepositoryContracts;
 
 namespace CLI.UI.Views;
 
 public class UserListView : IView
 {
-    public required IUserRepository UserRepository { private get; init; }
+    public required IRepository<User> UserRepository { private get; init; }
 
     public Task RenderAsync()
     {

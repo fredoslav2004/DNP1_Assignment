@@ -1,28 +1,46 @@
 # DNP1_Assignment
-VIA UC STE DNP1 Assignment repo
+# VIA UC STE DNP1 Assignment Repository
 
-# Assignment 1
+## Assignment 1
 
-We need a User, having at least a username and a password. It needs an Id of type int.
-We need a Post. It’s written by a User. It contains a Title and a Body. It also needs an Id of type int.
-A User can also write a Comment on a Post. A Comment contains a Body, and an Id of type int.
+We need a **User** entity with at least a username and a password. It must have an Id of type `int`.
 
-All entities must have an Id of type int.
+We need a **Post** entity written by a User. It contains a Title and a Body, and must have an Id of type `int`.
+
+A User can write a **Comment** on a Post. A Comment contains a Body and must have an Id of type `int`.
+
+All entities must have an Id of type `int`.
 
 ---
 
-Based on the above requirements, you must create a domain model diagram, where we can see:
+Based on the above requirements, create a domain model diagram showing:
 
 - The entities of the system [✓]
 - The properties (attributes) on the entities [✓]
-- The relationships between entities, e.g. Post is written by a User. Remember multiplicities at both ends, like you were taught for the Entity Relationship Diagram in DBS, or the Domain Model in SWE. [✓]
+- The relationships between entities (e.g., Post is written by a User). Include multiplicities at both ends, as taught in Entity Relationship Diagrams (DBS) or Domain Models (SWE). [✓]
 
-# Assignment 2
+## Assignment 2
 
-## Must-have requirements:
+### Must-Have Requirements
 
-- Create new user (user name, password, etc) [✓]
-- Create new post (title, body, user id) [✓]
-- Add comment to existing post (body, user id, post id) [✓]
-- View posts overview (just display [title, id] for each post) [✓]
-- View specific post (see title and body, and comments on the post) [✓]
+- Create a new user (username, password, etc.) [✓]
+- Create a new post (title, body, user ID) [✓]
+- Add a comment to an existing post (body, user ID, post ID) [✓]
+- View posts overview (display [title, ID] for each post) [✓]
+- View a specific post (title, body, and comments on the post) [✓]
+
+## Assignment 3
+
+In your new project, implement each repository interface as follows:
+
+Do not use a private field variable for a list of entities. Instead, represent the "list" as a file.
+
+Each method should:
+
+- Read the JSON text from the file.
+- Deserialize the JSON into a list.
+- Interact with the list (e.g., add, retrieve, delete, or overwrite entities).
+- Serialize the list back to JSON.
+- Write the JSON back to the file, overwriting existing content.
+
+Use async file interaction methods like `ReadAllTextAsync` and `WriteAllTextAsync`.

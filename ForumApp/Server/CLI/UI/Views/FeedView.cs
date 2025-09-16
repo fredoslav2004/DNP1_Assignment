@@ -1,14 +1,15 @@
 using System;
 using CLI.UI.Core;
+using Entities;
 using RepositoryContracts;
 
 namespace CLI.UI.Views;
 
 public class FeedView : IView
 {
-    public required IPostRepository PostRepository { private get; init; }
-    public required IUserRepository UserRepository { private get; init; }
-    public required ICommentRepository CommentRepository { private get; init; }
+    public required IRepository<Post> PostRepository { private get; init; }
+    public required IRepository<User> UserRepository { private get; init; }
+    public required IRepository<Comment> CommentRepository { private get; init; }
 
     public async Task RenderAsync()
     {
@@ -17,14 +18,14 @@ public class FeedView : IView
         int i = 1; // I didn't want to deal with IQueryable, whoops
         foreach (var post in posts)
         {
-            Entities.User? user = null;
+            User? user = null;
             try
             {
                 user = await UserRepository.GetSingleAsync(post.AuthorId);
             }
             catch (Exception)
             {
-                user = new Entities.User { Name = "???" };
+                user = new User { Name = "???" };
             }
             var comments = CommentRepository.GetManyAsync().Where(c => c.PostId == post.Id).ToList();
             // Note: I'm a tiny bit confused about comments not really being async despite the code being taken from the assignment

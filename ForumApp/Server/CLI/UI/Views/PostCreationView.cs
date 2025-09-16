@@ -1,13 +1,14 @@
 using System;
 using CLI.UI.Core;
+using Entities;
 using RepositoryContracts;
 
 namespace CLI.UI.Views;
 
 public class PostCreationView : IView
 {
-    public required IUserRepository UserRepository { get; init; }
-    public required IPostRepository PostRepository { get; init; }
+    public required IRepository<User> UserRepository { get; init; }
+    public required IRepository<Post> PostRepository { get; init; }
     private bool isCreating = true;
     private string lastTitle = "";
     private string lastContent = "";
@@ -48,7 +49,7 @@ public class PostCreationView : IView
 
         try
         {
-            var post = await PostRepository.AddAsync(new Entities.Post
+            var post = await PostRepository.AddAsync(new Post
             {
                 Title = title,
                 Content = content,

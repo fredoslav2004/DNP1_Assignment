@@ -1,6 +1,6 @@
 namespace Entities;
 
-public class Comment
+public class Comment : IIdentifiable
 {
     public int Id { get; set; }
     public int AuthorId { get; set; }

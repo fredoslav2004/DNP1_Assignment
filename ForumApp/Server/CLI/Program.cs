@@ -1,12 +1,13 @@
 ﻿using System.Text;
 using CLI;
 using CLI.UI.Core;
+using Entities;
 using InMemoryRepositories;
 using RepositoryContracts;
 
-IUserRepository userRepository = new UserInMemoryRepository();
-ICommentRepository commentRepository = new CommentInMemoryRepository();
-IPostRepository postRepository = new PostInMemoryRepository();
+IRepository<User> userRepository = new InMemoryRepository<User>();
+IRepository<Comment> commentRepository = new InMemoryRepository<Comment>();
+IRepository<Post> postRepository = new InMemoryRepository<Post>();
 
 Console.OutputEncoding = Encoding.UTF8;
 
