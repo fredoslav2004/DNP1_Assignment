@@ -206,6 +206,36 @@ public class CommandExecutor
                                 UserRepository = UserRepository
                             };
                         }
+                        else if (args[0] == "comment")
+                        {
+                            if (args.Length < 4 || !int.TryParse(args[1], out var postId) || !int.TryParse(args[2], out var userId))
+                            {
+                                postRender += () => Utils.PrintError($"You must provide a valid post ID, user ID, and comment content. Example: 'write comment 3 1 This is my comment.'");
+                            }
+                            else
+                            {
+                                var post = await PostRepository.GetSingleAsync(postId);
+                                if (post == null)
+                                {
+                                    postRender += () => Utils.PrintError($"No post found with ID {postId}. Cannot add comment.");
+                                }
+                                else
+                                {
+                                    var commentContent = string.Join(' ', args[3..]);
+                                    var newComment = await CommentRepository.AddAsync(new Entities.Comment
+                                    {
+                                        PostId = postId,
+                                        AuthorId = userId,
+                                        Content = commentContent
+                                    });
+                                    postRender += () => Utils.PrintInfo($"New comment added to post ID {postId}. {newComment}");
+                                }
+                            }
+                        }
+                        else
+                        {
+                            postRender += () => Utils.PrintError($"Unknown argument '{args[0]}' for command 'write'. Type 'help' to see available commands.");
+                        }
                     }
                     break;
                 case "show":
@@ -226,6 +256,11 @@ public class CommandExecutor
                         };
                         postRender += () => Utils.PrintInfo($"Post with ID {viewPostId} displayed.");
                     }
+                    break;
+                case "scrolltop":
+#pragma warning disable CA1416 // Validate platform compatibility
+                    Console.SetWindowPosition(0, 0);
+#pragma warning restore CA1416 // Validate platform compatibility
                     break;
                 default:
                     postRender += () => Utils.PrintError($"Unknown command '{command}'. Type 'help' to see available commands.");

@@ -17,9 +17,10 @@ CommandExecutor executor = new()
     PostRepository = postRepository
 };
 
-await executor.ExecuteTokens(["help"]);
-await executor.ExecuteTokens(["light"]);
-await executor.ExecuteTokens(["max"]);
+executor.ExecuteTokens(["help"]);
+executor.ExecuteTokens(["light"]);
+executor.ExecuteTokens(["max"]);
+executor.ExecuteTokens(["scrolltop"]);
 
 while (true)
 {

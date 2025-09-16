@@ -17,11 +17,19 @@ public class PostView : IView
         var comments = CommentRepository.GetManyAsync().Where(c => c.PostId == PostId);
 
         await post;
-        var author = UserRepository.GetSingleAsync(post.Result.Id);
+        Entities.User author = new() { Name = "???", Id = -1, Password = "???" };
+        try
+        {
+            author = await UserRepository.GetSingleAsync(post.Result.AuthorId);
+        }
+        catch (Exception)
+        {
+            Utils.PrintError($"Post with ID {PostId} not found.");
+            return;
+        }
 
         Utils.DrawBox($"{post.Result.Id} - {post.Result.Title}", 100);
-        await author;
-        Console.WriteLine($"Written by: {author.Result.Name}");
+        Console.WriteLine($"Written by: {author.Name}");
         Console.WriteLine($"Content: {post.Result.Content}");
         Utils.PrintRepeatChar('─', 100);
         Console.WriteLine("Comments:");

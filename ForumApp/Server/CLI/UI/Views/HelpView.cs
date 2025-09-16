@@ -22,7 +22,7 @@ public class HelpView : IView
             { "max", "Maximize the console window" },
             { "min", "Minimize the console window (just make smaller)" },
             { "reset", "Use with argument db to reset the database" },
-            { "write", "Args [post|comment]. Opens a creation menu for the selected entity" }
+            { "write", "Arg [post] - opens a post writing menu. Arg [comment] requires another arg <postId> <userId> <body>." }
         });
 
         return Task.CompletedTask;
