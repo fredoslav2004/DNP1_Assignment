@@ -13,7 +13,7 @@ public class UserListView : IView
     {
         // Surpressing the warning with the assumption that the passed repository has correct dimensions
 #pragma warning disable CS8601 // Possible null reference assignment.
-        var users = UserRepository.GetManyAsync();
+        var users = UserRepository.GetMany();
         var list = users.Select(u => new[] { u.Id.ToString(), u.Name, u.Password }).ToList();
 
         int rows = list.Count;
@@ -27,7 +27,7 @@ public class UserListView : IView
                 rect[i + 1, j] = list[i][j];
 #pragma warning restore CS8601 // Possible null reference assignment.
 
-        Utils.DrawTable(rect);
+        CLIUtils.DrawTable(rect);
 
         return Task.CompletedTask;
     }

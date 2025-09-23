@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CLI", "Server\CLI\CLI.cspro
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileRepositories", "Server\FileRepositories\FileRepositories.csproj", "{9EAF9CC3-B140-40EE-A877-AD4C2F117287}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Utils", "Utils\Utils.csproj", "{FCEDBE19-F6EE-43A4-B655-27EAB829DAD3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -44,6 +46,10 @@ Global
 		{9EAF9CC3-B140-40EE-A877-AD4C2F117287}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9EAF9CC3-B140-40EE-A877-AD4C2F117287}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9EAF9CC3-B140-40EE-A877-AD4C2F117287}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FCEDBE19-F6EE-43A4-B655-27EAB829DAD3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FCEDBE19-F6EE-43A4-B655-27EAB829DAD3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FCEDBE19-F6EE-43A4-B655-27EAB829DAD3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FCEDBE19-F6EE-43A4-B655-27EAB829DAD3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{9DC5E52A-4ADC-43C9-BAA9-07ABE64ED8E8} = {E479EEF0-88C1-43EB-BF5D-03E9701105C3}

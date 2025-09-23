@@ -29,7 +29,7 @@ public class CommandExecutor
 
         if (tokens.Length == 0)
         {
-            postRender += () => Utils.PrintError($"You must enter a command. Type 'help' to see available commands.");
+            postRender += () => CLIUtils.PrintError($"You must enter a command. Type 'help' to see available commands.");
             return;
         }
         else
@@ -41,7 +41,7 @@ public class CommandExecutor
             {
                 case "help":
                     currentView = new CLI.UI.Views.HelpView();
-                    postRender += () => Utils.PrintInfo("Help table displayed.");
+                    postRender += () => CLIUtils.PrintInfo("Help table displayed.");
                     break;
                 case "exit":
                     Environment.Exit(0);
@@ -50,7 +50,7 @@ public class CommandExecutor
                     if (args.Length == 0)
                     {
                         currentView = new CLI.UI.Views.UserListView() { UserRepository = UserRepository };
-                        postRender += () => Utils.PrintInfo("User list displayed.");
+                        postRender += () => CLIUtils.PrintInfo("User list displayed.");
                     }
                     else
                     {
@@ -62,7 +62,7 @@ public class CommandExecutor
                                     Name = args.Length > 1 ? args[1] : "NewUser",
                                     Password = args.Length > 2 ? args[2] : "NewPassword"
                                 });
-                                postRender += () => Utils.PrintInfo($"New user added. {_newUser}");
+                                postRender += () => CLIUtils.PrintInfo($"New user added. {_newUser}");
                                 break;
                             case "rm":
                                 if (args.Length > 1 && int.TryParse(args[1], out var userId))
@@ -70,20 +70,20 @@ public class CommandExecutor
                                     try
                                     {
                                         await UserRepository.DeleteAsync(userId);
-                                        postRender += () => Utils.PrintInfo($"User with ID {userId} removed.");
+                                        postRender += () => CLIUtils.PrintInfo($"User with ID {userId} removed.");
                                     }
                                     catch (Exception ex)
                                     {
-                                        postRender += () => Utils.PrintError($"Error removing user with ID {userId}: {ex.Message}");
+                                        postRender += () => CLIUtils.PrintError($"Error removing user with ID {userId}: {ex.Message}");
                                     }
                                 }
                                 else
                                 {
-                                    postRender += () => Utils.PrintError($"You must provide a valid user ID to remove. Example: 'users rm 3'");
+                                    postRender += () => CLIUtils.PrintError($"You must provide a valid user ID to remove. Example: 'users rm 3'");
                                 }
                                 break;
                             default:
-                                postRender += () => Utils.PrintError($"Unknown argument '{args[0]}' for command 'users'. Type 'help' to see available commands.");
+                                postRender += () => CLIUtils.PrintError($"Unknown argument '{args[0]}' for command 'users'. Type 'help' to see available commands.");
                                 break;
                         }
                     }
@@ -105,7 +105,7 @@ public class CommandExecutor
                         UserRepository = UserRepository,
                         CommentRepository = CommentRepository
                     };
-                    postRender += () => Utils.PrintInfo("Post feed displayed.");
+                    postRender += () => CLIUtils.PrintInfo("Post feed displayed.");
                     break;
                 case "posts":
                     if (args.Length == 0)
@@ -116,7 +116,7 @@ public class CommandExecutor
                             UserRepository = UserRepository,
                             CommentRepository = CommentRepository
                         };
-                        postRender += () => Utils.PrintInfo("Post list displayed.");
+                        postRender += () => CLIUtils.PrintInfo("Post list displayed.");
                     }
                     else
                     {
@@ -129,7 +129,7 @@ public class CommandExecutor
                                     Content = args.Length > 2 ? args[2] : "This is a new post.",
                                     AuthorId = args.Length > 3 && int.TryParse(args[3], out var uid) ? uid : 1
                                 });
-                                postRender += () => Utils.PrintInfo($"New post added. {_newPost}");
+                                postRender += () => CLIUtils.PrintInfo($"New post added. {_newPost}");
                                 break;
                             case "rm":
                                 if (args.Length > 1 && int.TryParse(args[1], out var postId))
@@ -137,29 +137,29 @@ public class CommandExecutor
                                     try
                                     {
                                         await PostRepository.DeleteAsync(postId);
-                                        postRender += () => Utils.PrintInfo($"Post with ID {postId} removed.");
+                                        postRender += () => CLIUtils.PrintInfo($"Post with ID {postId} removed.");
                                     }
                                     catch (Exception ex)
                                     {
-                                        postRender += () => Utils.PrintError($"Error removing post with ID {postId}: {ex.Message}");
+                                        postRender += () => CLIUtils.PrintError($"Error removing post with ID {postId}: {ex.Message}");
                                     }
                                 }
                                 else
                                 {
-                                    postRender += () => Utils.PrintError($"You must provide a valid post ID to remove. Example: 'posts rm 5'");
+                                    postRender += () => CLIUtils.PrintError($"You must provide a valid post ID to remove. Example: 'posts rm 5'");
                                 }
                                 break;
                             default:
-                                postRender += () => Utils.PrintError($"Unknown argument '{args[0]}' for command 'posts'. Type 'help' to see available commands.");
+                                postRender += () => CLIUtils.PrintError($"Unknown argument '{args[0]}' for command 'posts'. Type 'help' to see available commands.");
                                 break;
                         }
                     }
                     break;
                 case "max":
-                    Utils.MaximizeWindow();
+                    CLIUtils.MaximizeWindow();
                     break;
                 case "min":
-                    Utils.MinimizeWindow();
+                    CLIUtils.MinimizeWindow();
                     break;
                 case "dummy":
                     await UserRepository.AddAsync(User.GetDummy());
@@ -177,7 +177,7 @@ public class CommandExecutor
                     await PostRepository.AddAsync(Post.GetDummy());
                     await PostRepository.AddAsync(Post.GetDummy());
                     await PostRepository.AddAsync(Post.GetDummy());
-                    postRender += () => Utils.PrintInfo("5 dummy users, posts, and comments added.");
+                    postRender += () => CLIUtils.PrintInfo("5 dummy users, posts, and comments added.");
                     break;
                 case "reset":
                     if(args.Length > 0 && args[0].ToLower() == "db")
@@ -185,17 +185,17 @@ public class CommandExecutor
                         await UserRepository.ClearAsync();
                         await PostRepository.ClearAsync();
                         await CommentRepository.ClearAsync();
-                        postRender += () => Utils.PrintInfo("Database reset: all users, posts, and comments removed.");
+                        postRender += () => CLIUtils.PrintInfo("Database reset: all users, posts, and comments removed.");
                     }
                     else
                     {
-                        postRender += () => Utils.PrintError($"Unknown argument '{args[0]}' for command 'reset'. Did you mean 'reset db'? Type 'help' to see available commands.");
+                        postRender += () => CLIUtils.PrintError($"Unknown argument '{args[0]}' for command 'reset'. Did you mean 'reset db'? Type 'help' to see available commands.");
                     }
                     break;
                 case "write":
                     if (args.Length == 0)
                     {
-                        postRender += () => Utils.PrintError($"You must provide an argument for the 'write' command. Example: 'write post' or 'write comment'");
+                        postRender += () => CLIUtils.PrintError($"You must provide an argument for the 'write' command. Example: 'write post' or 'write comment'");
                     }
                     else
                     {
@@ -211,14 +211,14 @@ public class CommandExecutor
                         {
                             if (args.Length < 4 || !int.TryParse(args[1], out var postId) || !int.TryParse(args[2], out var userId))
                             {
-                                postRender += () => Utils.PrintError($"You must provide a valid post ID, user ID, and comment content. Example: 'write comment 3 1 This is my comment.'");
+                                postRender += () => CLIUtils.PrintError($"You must provide a valid post ID, user ID, and comment content. Example: 'write comment 3 1 This is my comment.'");
                             }
                             else
                             {
                                 var post = await PostRepository.GetSingleAsync(postId);
                                 if (post == null)
                                 {
-                                    postRender += () => Utils.PrintError($"No post found with ID {postId}. Cannot add comment.");
+                                    postRender += () => CLIUtils.PrintError($"No post found with ID {postId}. Cannot add comment.");
                                 }
                                 else
                                 {
@@ -229,13 +229,13 @@ public class CommandExecutor
                                         AuthorId = userId,
                                         Content = commentContent
                                     });
-                                    postRender += () => Utils.PrintInfo($"New comment added to post ID {postId}. {newComment}");
+                                    postRender += () => CLIUtils.PrintInfo($"New comment added to post ID {postId}. {newComment}");
                                 }
                             }
                         }
                         else
                         {
-                            postRender += () => Utils.PrintError($"Unknown argument '{args[0]}' for command 'write'. Type 'help' to see available commands.");
+                            postRender += () => CLIUtils.PrintError($"Unknown argument '{args[0]}' for command 'write'. Type 'help' to see available commands.");
                         }
                     }
                     break;
@@ -244,7 +244,7 @@ public class CommandExecutor
                 case "post":
                     if (args.Length == 0 || !int.TryParse(args[0], out var viewPostId))
                     {
-                        postRender += () => Utils.PrintError($"You must provide a valid post ID to view. Example: 'post 3'");
+                        postRender += () => CLIUtils.PrintError($"You must provide a valid post ID to view. Example: 'post 3'");
                     }
                     else
                     {
@@ -255,7 +255,7 @@ public class CommandExecutor
                             UserRepository = UserRepository,
                             CommentRepository = CommentRepository
                         };
-                        postRender += () => Utils.PrintInfo($"Post with ID {viewPostId} displayed.");
+                        postRender += () => CLIUtils.PrintInfo($"Post with ID {viewPostId} displayed.");
                     }
                     break;
                 case "scrolltop":
@@ -263,8 +263,16 @@ public class CommandExecutor
                     Console.SetWindowPosition(0, 0);
 #pragma warning restore CA1416 // Validate platform compatibility
                     break;
+                case "start":
+                    await ExecuteTokens(["max"]);
+                    await ExecuteTokens(["scrolltop"]);                    
+                    await ExecuteTokens(["light"]);                    
+                    await ExecuteTokens(["help"]);
+                    
+                    CLIUtils.PrintInfo("Startup script executed. Welcome to the Forum App!");
+                    break;
                 default:
-                    postRender += () => Utils.PrintError($"Unknown command '{command}'. Type 'help' to see available commands.");
+                    postRender += () => CLIUtils.PrintError($"Unknown command '{command}'. Type 'help' to see available commands.");
                     break;
             }
         }

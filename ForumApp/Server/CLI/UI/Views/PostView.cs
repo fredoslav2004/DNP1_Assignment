@@ -15,7 +15,7 @@ public class PostView : IView
     public async Task RenderAsync()
     {
         var post = PostRepository.GetSingleAsync(PostId);
-        var comments = CommentRepository.GetManyAsync().Where(c => c.PostId == PostId);
+        var comments = CommentRepository.GetMany().Where(c => c.PostId == PostId);
 
         await post;
         User author = new() { Name = "???", Id = -1, Password = "???" };
@@ -25,13 +25,13 @@ public class PostView : IView
         }
         catch (Exception)
         {
-            Utils.PrintError($"Author of this post not found.");
+            CLIUtils.PrintError($"Author of this post not found.");
         }
 
-        Utils.DrawBox($"{post.Result.Id} - {post.Result.Title}", 100);
+        CLIUtils.DrawBox($"{post.Result.Id} - {post.Result.Title}", 100);
         Console.WriteLine($"Written by: {author.Name}");
         Console.WriteLine($"Content: {post.Result.Content}");
-        Utils.PrintRepeatChar('─', 100);
+        CLIUtils.PrintRepeatChar('─', 100);
         Console.WriteLine("Comments:");
         // await comments;
         string[,] table = new string[comments.Count() + 1, 2];
@@ -50,7 +50,7 @@ public class PostView : IView
             table[i, 1] = comment.Content;
             i++;
         }
-        Utils.DrawTable(table);
+        CLIUtils.DrawTable(table);
         return;
     }
 }

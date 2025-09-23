@@ -2,6 +2,7 @@ using System;
 using CLI.UI.Core;
 using Entities;
 using RepositoryContracts;
+using CLIUtils = CLI.UI.Core.CLIUtils;
 
 namespace CLI.UI.Views;
 
@@ -29,7 +30,7 @@ public class PostCreationView : IView
 
     private async Task CreatePost()
     {
-        Utils.DrawBox(" Create New Post ", 100);
+        CLIUtils.DrawBox(" Create New Post ", 100);
         Console.Write("Title: ");
         var title = Console.ReadLine() ?? "???";
         Console.Write("Content: ");
@@ -39,7 +40,7 @@ public class PostCreationView : IView
 
         if (string.IsNullOrWhiteSpace(title) || string.IsNullOrWhiteSpace(content) || string.IsNullOrWhiteSpace(userIdInput) || !int.TryParse(userIdInput, out int userId))
         {
-            Utils.PrintError("Invalid input. Please ensure all fields are filled correctly.");
+            CLIUtils.PrintError("Invalid input. Please ensure all fields are filled correctly.");
             return;
         }
 
@@ -55,23 +56,23 @@ public class PostCreationView : IView
                 Content = content,
                 AuthorId = userId
             });
-            Utils.PrintInfo("Post created successfully.");
+            CLIUtils.PrintInfo("Post created successfully.");
         }
         catch (ArgumentException ex)
         {
-            Utils.PrintError(ex.Message);
+            CLIUtils.PrintError(ex.Message);
             return;
         }
         catch (Exception)
         {
-            Utils.PrintError("An error occurred while creating the post. Please try again.");
+            CLIUtils.PrintError("An error occurred while creating the post. Please try again.");
             return;
         }
     }
 
     private void ShowLastCreation()
     {
-        Utils.DrawBox(" Last Created Post ", 100);
+        CLIUtils.DrawBox(" Last Created Post ", 100);
         Console.WriteLine($"Title: {lastTitle}");
         Console.WriteLine($"Content: {lastContent}");
         Console.WriteLine($"Author ID: {lastAuthorId}");

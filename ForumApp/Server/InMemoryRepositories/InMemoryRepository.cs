@@ -45,7 +45,7 @@ public class InMemoryRepository<T> : IRepository<T> where T : class, IIdentifiab
         return Task.FromResult(T);
     }
 
-    public IQueryable<T> GetManyAsync()
+    public IQueryable<T> GetMany()
     {
         return Ts.AsQueryable();
     }

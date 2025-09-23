@@ -8,9 +8,9 @@ public class HelpView : IView
     const int LINE_WIDTH = 50;
     public Task RenderAsync()
     {
-        Utils.DrawBox(" Forum App ", LINE_WIDTH);
+        CLIUtils.DrawBox(" Forum App ", LINE_WIDTH);
 
-        Utils.DrawTable(new string[,]
+        CLIUtils.DrawTable(new string[,]
         {
             { " ◆ Command ◆ ", " ◆ Description ◆ " },
             { "help", "Display this table again" },

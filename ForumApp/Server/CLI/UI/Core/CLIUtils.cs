@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 
 namespace CLI.UI.Core;
 
-public class Utils
+public class CLIUtils
 {
     public static void PrintRepeatChar(char c, int count, bool newLineAfter = true)
     {
@@ -34,9 +34,9 @@ public class Utils
     }
     public static void DrawBox(string text, int width = 20)
     {
-        Console.Write("┌"); Utils.PrintRepeatChar('─', width, false); Console.Write("┐\n");
-        Console.Write("│"); Utils.FormatInTheMiddle(text, width, ' ', false); Console.Write("│\n");
-        Console.Write("└"); Utils.PrintRepeatChar('─', width, false); Console.Write("┘\n");
+        Console.Write("┌"); CLIUtils.PrintRepeatChar('─', width, false); Console.Write("┐\n");
+        Console.Write("│"); CLIUtils.FormatInTheMiddle(text, width, ' ', false); Console.Write("│\n");
+        Console.Write("└"); CLIUtils.PrintRepeatChar('─', width, false); Console.Write("┘\n");
     }
     public static void WriteSeparator(int[] widths, char left, char mid, char right, char fill, int padding = 2)
     {

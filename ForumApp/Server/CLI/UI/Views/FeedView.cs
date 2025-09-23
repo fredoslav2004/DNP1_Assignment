@@ -13,7 +13,7 @@ public class FeedView : IView
 
     public async Task RenderAsync()
     {
-        var posts = PostRepository.GetManyAsync();
+        var posts = PostRepository.GetMany();
         var tableOfPosts = new string[posts.Count()+1, 4];
         int i = 1; // I didn't want to deal with IQueryable, whoops
         foreach (var post in posts)
@@ -27,7 +27,7 @@ public class FeedView : IView
             {
                 user = new User { Name = "???" };
             }
-            var comments = CommentRepository.GetManyAsync().Where(c => c.PostId == post.Id).ToList();
+            var comments = CommentRepository.GetMany().Where(c => c.PostId == post.Id).ToList();
             // Note: I'm a tiny bit confused about comments not really being async despite the code being taken from the assignment
 
             tableOfPosts[i, 0] = post.Id.ToString();
@@ -41,6 +41,6 @@ public class FeedView : IView
         tableOfPosts[0, 1] = " ◆ Title ◆ ";
         tableOfPosts[0, 2] = " ◆ Author ◆ ";
         tableOfPosts[0, 3] = " ◆ Comments ◆ ";
-        Utils.DrawTable(tableOfPosts);
+        CLIUtils.DrawTable(tableOfPosts);
     }
 }
