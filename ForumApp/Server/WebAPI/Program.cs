@@ -1,5 +1,6 @@
 using Entities;
 using FileRepositories;
+using InMemoryRepositories;
 using RepositoryContracts;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,9 +11,9 @@ builder.Services.AddOpenApi();
 
 builder.Services.AddEndpointsApiExplorer();
 
-builder.Services.AddScoped<IRepository<Post>, FileRepository<Post>>();
-builder.Services.AddScoped<IRepository<User>, FileRepository<User>>();
-builder.Services.AddScoped<IRepository<Comment>, FileRepository<Comment>>();
+builder.Services.AddScoped<IRepository<Post>, InMemoryRepository<Post>>();
+builder.Services.AddScoped<IRepository<User>, InMemoryRepository<User>>();
+builder.Services.AddScoped<IRepository<Comment>, InMemoryRepository<Comment>>();
 
 var app = builder.Build();
 
