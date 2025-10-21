@@ -2,7 +2,7 @@
 
 ###
 
-POST @WebAPI_HostAddress/posts
+POST {{WebAPI_HostAddress}}/posts
 Content-Type: application/json
 
 {
