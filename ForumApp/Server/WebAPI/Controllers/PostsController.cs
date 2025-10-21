@@ -43,6 +43,13 @@ namespace WebAPI.Controllers
 
             await postRepo.UpdateAsync(post);
             return NoContent();
-        }        
+        }       
+
+        [HttpDelete("{id}")] 
+        public async Task<ActionResult> DeletePost(int id)
+        {
+            await postRepo.DeleteAsync(id);
+            return NoContent();
+        }
     }
 }
