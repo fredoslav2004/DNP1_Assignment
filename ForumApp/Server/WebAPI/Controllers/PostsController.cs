@@ -8,9 +8,10 @@ namespace WebAPI.Controllers
 {
     [Route("[controller]")]
     [ApiController]
-    public class PostsController(IRepository<Post> postRepo) : ControllerBase
+    public class PostsController(IRepository<Post> postRepo, IRepository<Comment> commentRepo) : ControllerBase
     {
         private readonly IRepository<Post> postRepo = postRepo;
+        private readonly IRepository<Comment> commentRepo = commentRepo;
 
         [HttpPost]
         public async Task<ActionResult<Post>> AddPost([FromBody] CreatePostDTO post)
@@ -20,9 +21,19 @@ namespace WebAPI.Controllers
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<Post>> GetPosts()
+        public ActionResult<IEnumerable<Post>> GetPosts([FromQuery] string? titleContains = null, [FromQuery] int? writtenByID = null, [FromQuery] bool sortByCommentCount = false)
         {
             var posts = postRepo.GetMany();
+
+            posts = posts.
+                        Where(post => titleContains == null || post.Title.Contains(titleContains, StringComparison.OrdinalIgnoreCase))
+                        .Where(post => writtenByID == null || post.AuthorId == writtenByID);
+
+            if (sortByCommentCount)
+            {
+                posts = posts.OrderByDescending(post => commentRepo.GetMany().Count(comment => comment.PostId == post.Id));
+            }
+
             return posts == null ? NotFound() : Ok(posts);
         }
 
@@ -43,9 +54,9 @@ namespace WebAPI.Controllers
 
             await postRepo.UpdateAsync(post);
             return NoContent();
-        }       
+        }
 
-        [HttpDelete("{id}")] 
+        [HttpDelete("{id}")]
         public async Task<ActionResult> DeletePost(int id)
         {
             await postRepo.DeleteAsync(id);

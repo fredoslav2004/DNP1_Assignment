@@ -1,0 +1,49 @@
+@hostname = localhost
+@port = 5156
+@baseURL = http://{{hostname}}:{{port}}
+
+### Create
+POST {{baseURL}}/posts
+Content-Type: application/json
+
+{
+  "Title": "My First Post",
+  "Content": "This is the content of my first post.",
+  "AuthorId": 1
+}
+
+
+### Read
+GET {{baseURL}}/posts
+
+
+###
+GET {{baseURL}}/posts/1
+
+
+###
+GET {{baseURL}}/posts?sortByCommentCount=true
+
+
+###
+GET {{baseURL}}/posts?titleContains=first
+
+
+###
+GET {{baseURL}}/posts?writtenByID=1
+
+
+### Update
+PUT {{baseURL}}/posts/1
+Content-Type: application/json
+
+{
+  "Id": 1,
+  "Title": "Updated Post Title",
+  "Content": "This is the updated content of my post.",
+  "AuthorId": 1
+}
+
+
+### Delete
+DELETE {{baseURL}}/posts/1
