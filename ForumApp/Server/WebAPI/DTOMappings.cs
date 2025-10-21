@@ -23,4 +23,14 @@ public static class DTOMappings
         };
 
     public static CreateUserDTO ToDTO(this Entities.User entity) => new(entity.Name, entity.Password!);
+
+    public static Entities.Comment ToEntity(this CreateCommentDTO dto) =>
+        new()
+        {
+            AuthorId = dto.AuthorId,
+            PostId = dto.PostId,
+            Content = dto.Content
+        };
+
+    public static CreateCommentDTO ToDTO(this Entities.Comment entity) => new(entity.AuthorId, entity.PostId,  entity.Content);
 }

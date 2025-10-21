@@ -26,8 +26,8 @@ namespace WebAPI.Controllers
             var posts = postRepo.GetMany();
 
             posts = posts.
-                        Where(post => titleContains == null || post.Title.Contains(titleContains, StringComparison.OrdinalIgnoreCase))
-                        .Where(post => writtenByID == null || post.AuthorId == writtenByID);
+                        Where(post => titleContains == null || post.Title.Contains(titleContains, StringComparison.OrdinalIgnoreCase) 
+                        && (writtenByID == null || post.AuthorId == writtenByID));
 
             if (sortByCommentCount)
             {

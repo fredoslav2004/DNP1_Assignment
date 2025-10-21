@@ -1,0 +1,53 @@
+@hostname = localhost
+@port = 5156
+@baseURL = http://{{hostname}}:{{port}}
+
+### Create
+POST {{baseURL}}/comments
+Content-Type: application/json
+
+{
+    "Content": "Hi, I'm Line.",
+    "AuthorId": 2,
+    "PostId": 1
+}
+
+
+### Read
+GET {{baseURL}}/comments
+
+
+###
+GET {{baseURL}}/comments/1
+
+
+###
+GET {{baseURL}}/comments?writtenByID=1
+
+###
+
+GET {{baseURL}}/comments?writtenByName=Line
+
+###
+
+GET {{baseURL}}/comments?contentContains=shit
+
+###
+
+GET {{baseURL}}/comments?postId=1
+
+
+### Update
+PUT {{baseURL}}/comments/1
+Content-Type: application/json
+
+{
+    "Id": 1,
+    "Content": "This is the updated content of my comment.",
+    "AuthorId": 1,
+    "PostId": 1
+}
+
+
+### Delete
+DELETE {{baseURL}}/comments/2
