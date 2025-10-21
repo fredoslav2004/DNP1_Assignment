@@ -1,0 +1,40 @@
+@hostname = localhost
+@port = 5156
+@baseURL = http://{{hostname}}:{{port}}
+
+
+### Create
+POST {{baseURL}}/users
+Content-Type: application/json
+
+{
+  "Name": "Firstnamio Lastnamio",
+  "Password": "VerySecretPassword123"
+}
+
+
+### Read
+GET {{baseURL}}/users
+
+
+###
+GET {{baseURL}}/users/1
+
+
+###
+GET {{baseURL}}/users?nameContains=io
+
+
+### Update
+PUT {{baseURL}}/users/1
+Content-Type: application/json
+
+{
+  "Id": 1,
+  "Name": "Updated Name",
+  "Password": "NewSecretPassword456"
+}
+
+
+### Delete
+DELETE {{baseURL}}/users/1
