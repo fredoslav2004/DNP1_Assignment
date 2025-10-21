@@ -10,3 +10,23 @@ Content-Type: application/json
   "Content": "This is the content of my first post.",
   "AuthorId": 1
 }
+
+###
+
+GET {{WebAPI_HostAddress}}/posts
+
+###
+
+GET {{WebAPI_HostAddress}}/posts/1
+
+###
+
+PUT {{WebAPI_HostAddress}}/posts/1
+Content-Type: application/json
+
+{
+  "Id": 1,
+  "Title": "Updated Post Title",
+  "Content": "This is the updated content of my post.",
+  "AuthorId": 1
+}
