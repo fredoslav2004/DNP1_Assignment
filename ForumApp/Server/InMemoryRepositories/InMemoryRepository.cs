@@ -22,7 +22,7 @@ public class InMemoryRepository<T> : IRepository<T> where T : class, IIdentifiab
     {
         T existingT =
             Ts.SingleOrDefault(p => p.Id == T.Id)
-                ?? throw new InvalidOperationException($"T with ID '{T.Id}' not found");
+                ?? throw new NotFoundException($"T with ID '{T.Id}' not found");
         Ts.Remove(existingT);
         Ts.Add(T);
         return Task.CompletedTask;
@@ -32,7 +32,7 @@ public class InMemoryRepository<T> : IRepository<T> where T : class, IIdentifiab
     {
         T TToRemove =
             Ts.SingleOrDefault(p => p.Id == id)
-                ?? throw new InvalidOperationException($"T with ID '{id}' not found");
+                ?? throw new NotFoundException($"T with ID '{id}' not found");
         Ts.Remove(TToRemove);
         return Task.CompletedTask;
     }
@@ -41,7 +41,7 @@ public class InMemoryRepository<T> : IRepository<T> where T : class, IIdentifiab
     {
         T T =
             Ts.SingleOrDefault(p => p.Id == id)
-                ?? throw new InvalidOperationException($"T with ID '{id}' not found");
+                ?? throw new NotFoundException($"T with ID '{id}' not found");
         return Task.FromResult(T);
     }
 

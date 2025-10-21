@@ -7,7 +7,7 @@ namespace FileRepositories;
 
 public class FileRepository<T> : IRepository<T> where T : class, IIdentifiable
 {
-    private string repositoryName;
+    private readonly string repositoryName;
     private readonly string suffix = ".json";
     private string relativePath => $"{repositoryName}{suffix}";
     private string GetFilePath() => Ut.GetPersistantFilePath(relativePath);
@@ -50,6 +50,10 @@ public class FileRepository<T> : IRepository<T> where T : class, IIdentifiable
             {
                 items.Remove(itemToRemove);
             }
+            else
+            {
+                throw new NotFoundException($"Entity with id {id} not found");
+            }
             await Task.CompletedTask;
         });
     }
@@ -65,7 +69,7 @@ public class FileRepository<T> : IRepository<T> where T : class, IIdentifiable
     {
         IQueryable<T> items = GetMany();
         var item = items.SingleOrDefault(e => e.Id == id);
-        return Task.FromResult(item ?? throw new KeyNotFoundException($"Entity with id {id} not found"));
+        return Task.FromResult(item ?? throw new NotFoundException($"Entity with id {id} not found"));
     }
 
     public Task UpdateAsync(T entity)
@@ -77,6 +81,10 @@ public class FileRepository<T> : IRepository<T> where T : class, IIdentifiable
             {
                 items.Remove(existingItem);
                 items.Add(entity);
+            }
+            else
+            {
+                throw new NotFoundException($"Entity with id {entity.Id} not found");
             }
             await Task.CompletedTask;
         });
