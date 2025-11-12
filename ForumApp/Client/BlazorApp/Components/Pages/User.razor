@@ -6,7 +6,7 @@
 @if (UserInfo.HasValue())
 {
     
-    <h1>[@(UserInfo.Resource.Id)] @UserInfo.Resource.Name</h1>
+    <h1>[@(UserInfo.GetValue().Id)] @UserInfo.GetValue().Name</h1>
 }
 else if (!UserInfo.IsLoading)
 {

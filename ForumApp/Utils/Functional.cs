@@ -40,5 +40,17 @@ public static class Functional
         {
             return Resource != null && Error == null && !IsLoading;
         }
+
+        public T GetValue()
+        {
+            if(HasValue())
+            {
+                return Resource!;
+            }
+            else
+            {
+                throw new InvalidOperationException("Resource does not have a valid value.");
+            }
+        }
     }
 }

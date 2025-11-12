@@ -12,4 +12,5 @@ public class HttpUserService(HttpCrudService crudService) : IUserService
     public async Task UpdateUserAsync(UpdateUserDTO request) => await crudService.UpdateAsync<UserInfoDTO, UpdateUserDTO>($"users/update/{request.Id}", request);
     public async Task DeleteUserAsync(int id) => await crudService.DeleteAsync($"users/{id}");
     public async Task<UserInfoDTO> GetUserAsync(int id) => await crudService.GetAsync<UserInfoDTO>("users", id);
+    public Task<List<UserInfoDTO>> GetUsersAsync() => crudService.GetAsync<List<UserInfoDTO>>("users");
 }

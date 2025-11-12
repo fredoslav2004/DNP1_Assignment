@@ -1,16 +1,55 @@
 ﻿@page "/users"
 @using DTOs
-@using Utils
 @using static Utils.Functional
+@inject BlazorApp.Services.IUserService UserService
 
 <h1>Users:</h1>
 
 <!-- Clickable table with all the users displaying their Id, Name -->
+@if (UserInfo.HasValue())
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var user in UserInfo.GetValue())
+            {
+                <tr>
+                    <td>@user.Id</td>
+                    <td><a href="@($"/users/{user.Id}")">@user.Name</a></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else if (!UserInfo.IsLoading)
+{
+    <h2>No users found</h2>
+    @if (UserInfo.Error != null)
+    {
+        <p class="text-danger">Error: @UserInfo.Error.Message</p>
+    }
+}
+else
+{
+    <p>Loading users...</p>
+}
 
 @code {
     public AsyncResource<List<UserInfoDTO>> UserInfo { get; set; } = new AsyncResource<List<UserInfoDTO>>();
     protected override async Task OnInitializedAsync()
     {
-
+        try
+        {
+            UserInfo.SetValue(await UserService.GetUsersAsync());
+        }
+        catch (Exception ex)
+        {
+            UserInfo.SetError(ex);
+        }
     }
 }

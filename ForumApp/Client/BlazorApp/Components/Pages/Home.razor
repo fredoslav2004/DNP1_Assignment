@@ -1,7 +1,60 @@
 ﻿@page "/"
+@using DTOs
+@using static Utils.Functional
+@inject BlazorApp.Services.IPostService PostService
 
 <PageTitle>Home</PageTitle>
 
-<h1>Hello, world!</h1>
+<h1>Forum App</h1>
 
-Welcome to your new app.
+<p>Welcome to the Forum App. This is your go-to place for brainrot, doomscrolling and all things internet forums. </p>
+
+<h2>Feed:</h2>
+
+@if (Posts.HasValue())
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var post in Posts.GetValue())
+            {
+                <tr>
+                    <td>@post.Id</td>
+                    <td><a href="@($"/posts/{post.Id}")">@post.Title</a></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else if (!Posts.IsLoading)
+{
+    <h2>No users found</h2>
+    @if (Posts.Error != null)
+    {
+        <p class="text-danger">Error: @Posts.Error.Message</p>
+    }
+}
+else
+{
+    <p>Loading your feed...</p>
+}
+
+@code {
+    public AsyncResource<List<PostDTO>> Posts { get; set; } = new AsyncResource<List<PostDTO>>();
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            Posts.SetValue(await PostService.GetPostsAsync());
+        }
+        catch (Exception ex)
+        {
+            Posts.SetError(ex);
+        }
+    }
+}
