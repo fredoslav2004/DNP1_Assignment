@@ -14,14 +14,14 @@ namespace WebAPI.Controllers
         private readonly IRepository<Comment> commentRepo = commentRepo;
 
         [HttpPost]
-        public async Task<ActionResult<Post>> AddPost([FromBody] CreatePostDTO post)
+        public async Task<ActionResult<PostDTO>> AddPost([FromBody] CreatePostDTO post)
         {
             Post? addedPost = await postRepo.AddAsync(post.ToEntity());
-            return addedPost == null ? BadRequest() : Created($"/posts/{addedPost.Id}", addedPost);
+            return addedPost == null ? BadRequest() : Created($"/posts/{addedPost.Id}", addedPost.ToDTO());
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<Post>> GetPosts([FromQuery] string? titleContains = null, [FromQuery] int? writtenByID = null, [FromQuery] bool sortByCommentCount = false)
+        public ActionResult<IEnumerable<PostDTO>> GetPosts([FromQuery] string? titleContains = null, [FromQuery] int? writtenByID = null, [FromQuery] bool sortByCommentCount = false)
         {
             var posts = postRepo.GetMany();
 
@@ -34,25 +34,25 @@ namespace WebAPI.Controllers
                 posts = posts.OrderByDescending(post => commentRepo.GetMany().Count(comment => comment.PostId == post.Id));
             }
 
-            return posts == null ? NotFound() : Ok(posts);
+            return posts == null ? NotFound() : Ok(posts.Select(post => post.ToDTO()));
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Post>> GetPost(int id)
+        public async Task<ActionResult<PostDTO>> GetPost(int id)
         {
             Post post = await postRepo.GetSingleAsync(id);
-            return post == null ? NotFound() : Ok(post);
+            return post == null ? NotFound() : Ok(post.ToDTO());
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult> UpdatePost(int id, [FromBody] Post post)
+        public async Task<ActionResult> UpdatePost(int id, [FromBody] PostDTO post)
         {
             if (id != post.Id)
             {
                 return BadRequest("ID in the URL does not match the ID in the body");
             }
 
-            await postRepo.UpdateAsync(post);
+            await postRepo.UpdateAsync(post.ToEntity());
             return NoContent();
         }
 

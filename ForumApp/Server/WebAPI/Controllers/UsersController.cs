@@ -13,36 +13,36 @@ namespace WebAPI.Controllers
         private readonly IRepository<User> userRepo = userRepo;
 
         [HttpPost]
-        public async Task<ActionResult<User>> AddUser([FromBody] CreateUserDTO user)
+        public async Task<ActionResult<UserInfoDTO>> AddUser([FromBody] CreateUserDTO user)
         {
             User? addedUser = await userRepo.AddAsync(user.ToEntity());
-            return addedUser == null ? BadRequest() : Created($"/users/{addedUser.Id}", addedUser);
+            return addedUser == null ? BadRequest() : Created($"/users/{addedUser.Id}", addedUser.ToUserInfoDTO());
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<User>> GetUsers([FromQuery] string? nameContains = null)
+        public ActionResult<IEnumerable<UserInfoDTO>> GetUserInfos([FromQuery] string? nameContains = null)
         {
             var users = userRepo.GetMany();
             users = users.Where(user => nameContains == null || user.Name.Contains(nameContains, StringComparison.OrdinalIgnoreCase));
-            return users == null ? NotFound() : Ok(users);
+            return users == null ? NotFound() : Ok(users.Select(user => user.ToUserInfoDTO()));
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<User>> GetUser(int id)
+        public async Task<ActionResult<UserInfoDTO>> GetUserInfo(int id)
         {
             User user = await userRepo.GetSingleAsync(id);
-            return user == null ? NotFound() : Ok(user);
+            return user == null ? NotFound() : Ok(user.ToUserInfoDTO());
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult> UpdateUser(int id, [FromBody] User user)
+        public async Task<ActionResult> UpdateUser(int id, [FromBody] UpdateUserDTO user)
         {
             if (id != user.Id)
             {
                 return BadRequest("ID in the URL does not match the ID in the body");
             }
 
-            await userRepo.UpdateAsync(user);
+            await userRepo.UpdateAsync(user.ToEntity());
             return NoContent();
         }
 

@@ -5,6 +5,6 @@ namespace BlazorApp.Services;
 
 public interface IUserService
 {
-    public Task<UserInfoDTO?> GetUserInfoAsync(int userId);
-    public Task<IEnumerable<UserInfoDTO>> GetUserInfosAsync(string? nameContains = null);
+    public Task<UserInfoDTO> AddUserAsync(CreateUserDTO request);
+    
 }

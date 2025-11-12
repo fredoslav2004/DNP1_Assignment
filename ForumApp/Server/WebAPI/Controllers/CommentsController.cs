@@ -14,14 +14,14 @@ namespace WebAPI.Controllers
         private readonly IRepository<User> userRepo = userRepo;
 
         [HttpPost]
-        public async Task<ActionResult<Comment>> AddComment([FromBody] CreateCommentDTO comment)
+        public async Task<ActionResult<CommentDTO>> AddComment([FromBody] CreateCommentDTO comment)
         {
             Comment? addedComment = await commentRepo.AddAsync(comment.ToEntity());
-            return addedComment == null ? BadRequest() : Created($"/comments/{addedComment.Id}", addedComment);
+            return addedComment == null ? BadRequest() : Created($"/comments/{addedComment.Id}", addedComment.ToDTO());
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<Comment>> GetComments([FromQuery] int? writtenByID = null, [FromQuery] string? writtenByName = null, [FromQuery] string? contentContains = null, [FromQuery] int? postId = null)
+        public ActionResult<IEnumerable<CommentDTO>> GetComments([FromQuery] int? writtenByID = null, [FromQuery] string? writtenByName = null, [FromQuery] string? contentContains = null, [FromQuery] int? postId = null)
         {
             var comments = commentRepo.GetMany();
             comments = comments.Where(comment =>
@@ -30,25 +30,25 @@ namespace WebAPI.Controllers
                 (contentContains == null || comment.Content.Contains(contentContains, StringComparison.OrdinalIgnoreCase)) &&
                 (postId == null || comment.PostId == postId)
             );
-            return comments == null ? NotFound() : Ok(comments);
+            return comments == null ? NotFound() : Ok(comments.Select(comment => comment.ToDTO()));
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Comment>> GetComment(int id)
+        public async Task<ActionResult<CommentDTO>> GetComment(int id)
         {
             Comment comment = await commentRepo.GetSingleAsync(id);
-            return comment == null ? NotFound() : Ok(comment);
+            return comment == null ? NotFound() : Ok(comment.ToDTO());
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult> UpdateComment(int id, [FromBody] Comment comment)
+        public async Task<ActionResult> UpdateComment(int id, [FromBody] CommentDTO comment)
         {
             if (id != comment.Id)
             {
                 return BadRequest("ID in the URL does not match the ID in the body");
             }
 
-            await commentRepo.UpdateAsync(comment);
+            await commentRepo.UpdateAsync(comment.ToEntity());
             return NoContent();
         }
 
