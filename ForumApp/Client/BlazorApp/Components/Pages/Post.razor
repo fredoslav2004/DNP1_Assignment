@@ -1,8 +1,11 @@
 ﻿@page "/posts/{id:int}"
 @using DTOs
 @using static Utils.Functional
+@using Microsoft.JSInterop
 @inject BlazorApp.Services.IPostService PostService
 @inject BlazorApp.Services.IUserService UserService
+@inject BlazorApp.Services.ICommentService CommentService
+@inject IJSRuntime JS
 
 @if (PostInfo.HasValue())
 {
@@ -27,11 +30,68 @@ else
     <p>Loading user information...</p>
 }
 
+<h2>Comments:</h2>
+@if (CommentsInfo.HasValue())
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Content</th>
+                <th>Author</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var commentViewModel in CommentsInfo.GetValue())
+            {
+                <tr>
+                    <td>@commentViewModel.Comment.Content</td>
+                    <td>
+                        @if (commentViewModel.Author != null)
+                        {
+                            <a href="@($"/users/{commentViewModel.Author.Id}")">@commentViewModel.Author.Name</a>
+                        }
+                        else
+                        {
+                            <em>Unknown Author</em>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else if (!CommentsInfo.IsLoading)
+{
+    <h2>No comments found</h2>
+    @if (CommentsInfo.Error != null)
+    {
+        <p class="text-danger">Error: @CommentsInfo.Error.Message</p>
+    }
+}
+else
+{
+    <p>Loading comments...</p>
+}
+
+<h2>Write a comment</h2>
+
+<!-- comments now allow authorId to be entered -->
+<div class="mb-3">
+    <label for="postContent" class="form-label">Content:</label>
+    <input type="text" class="form-control" id="postContent" @bind="NewCommentContent" />
+    <label for="postAuthorId" class="form-label">AuthorId:</label>
+    <input type="text" class="form-control" id="postAuthorId" @bind="NewCommentAuthorId" />
+</div>
+<button class="btn btn-primary" @onclick="CreateComment">Create Comment</button>
+
 @code {
     [Parameter]
     public int? id { get; set; }
     public AsyncResource<PostDTO> PostInfo { get; set; } = new AsyncResource<PostDTO>();
     public AsyncResource<UserInfoDTO> AuthorInfo { get; set; } = new AsyncResource<UserInfoDTO>();
+    public AsyncResource<List<CommentViewModel>> CommentsInfo { get; set; } = new AsyncResource<List<CommentViewModel>>();
+    public string NewCommentContent { get; set; } = string.Empty;
+    public int NewCommentAuthorId { get; set; } = 1;
 
     public string GetWrittenByText()
     {
@@ -53,6 +113,7 @@ else
             {
                 PostInfo.SetValue(await PostService.GetPostAsync(id.Value));
                 await LoadAuthorInfo(PostInfo.GetValue().AuthorId);
+                await LoadCommentsAsync();
             }
             catch (Exception ex)
             {
@@ -74,6 +135,78 @@ else
         catch (Exception ex)
         {
             AuthorInfo.SetError(ex);
+        }
+    }
+
+    private async Task<UserInfoDTO?> GetAuthorInfo(int authorId)
+    {
+        try
+        {
+            return await UserService.GetUserAsync(authorId);
+        }
+        catch (Exception)
+        {
+            return null;
+        }
+    }
+
+    public class CommentViewModel
+    {
+        public CommentDTO Comment { get; set; }
+        public UserInfoDTO? Author { get; set; }
+
+        public CommentViewModel(CommentDTO comment, UserInfoDTO? author)
+        {
+            Comment = comment;
+            Author = author;
+        }
+    }
+
+    public async Task LoadCommentsAsync()
+    {
+        if (id.HasValue)
+        {
+            try
+            {
+                // TODO: Optimize cuz this sucks ass
+                var comments = await CommentService.GetCommentsByPostIdAsync(id.Value);
+                var commentViewModels = new List<CommentViewModel>();
+
+                foreach (var comment in comments)
+                {
+                    var author = await GetAuthorInfo(comment.AuthorId);
+                    commentViewModels.Add(new CommentViewModel(comment, author));
+                }
+
+                CommentsInfo.SetValue(commentViewModels);
+            }
+            catch (Exception ex)
+            {
+                CommentsInfo.SetError(ex);
+            }
+        }
+        else
+        {
+            CommentsInfo.SetInvalid("No post ID provided.");
+        }
+    }
+
+    private async Task CreateComment()
+    {
+        if (id.HasValue)
+        {
+            try
+            {
+                var newComment = new CreateCommentDTO(NewCommentAuthorId, id.Value, NewCommentContent);
+                await CommentService.AddCommentAsync(newComment);
+                NewCommentContent = string.Empty;
+                NewCommentAuthorId = 1;
+                await LoadCommentsAsync();
+            }
+            catch (Exception ex)
+            {
+                await JS.InvokeVoidAsync("alert", $"Error creating comment: {ex.Message}");
+            }
         }
     }
 }
