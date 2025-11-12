@@ -1,0 +1,16 @@
+﻿@page "/users"
+@using DTOs
+@using Utils
+@using static Utils.Functional
+
+<h1>Users:</h1>
+
+<!-- Clickable table with all the users displaying their Id, Name -->
+
+@code {
+    public AsyncResource<List<UserInfoDTO>> UserInfo { get; set; } = new AsyncResource<List<UserInfoDTO>>();
+    protected override async Task OnInitializedAsync()
+    {
+
+    }
+}

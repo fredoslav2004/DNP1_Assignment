@@ -1,0 +1,48 @@
+﻿@page "/users/{id:int}"
+@using DTOs
+@using static Utils.Functional
+@inject BlazorApp.Services.IUserService UserService
+
+@if (UserInfo.HasValue())
+{
+    
+    <h1>[@(UserInfo.Resource.Id)] @UserInfo.Resource.Name</h1>
+}
+else if (!UserInfo.IsLoading)
+{
+    <h1>User not found</h1>
+    @if (UserInfo.Error != null)
+    {
+        <p class="text-danger">Error: @UserInfo.Error.Message</p>
+    }
+}
+else
+{
+    <h1>User @id</h1>
+    <p>Loading user information...</p>
+}
+
+@code {
+    [Parameter]
+    public int? id { get; set; }
+    public AsyncResource<UserInfoDTO> UserInfo { get; set; } = new AsyncResource<UserInfoDTO>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (id.HasValue)
+        {
+            try
+            {
+                UserInfo.SetValue(await UserService.GetUserAsync(id.Value));
+            }
+            catch (Exception ex)
+            {
+                UserInfo.SetError(ex);
+            }
+        }
+        else
+        {
+            UserInfo.SetInvalid("No user ID provided.");
+        }
+    }
+}
