@@ -1,0 +1,33 @@
+@hostname = localhost
+@port = 5156
+@baseURL = http://{{hostname}}:{{port}}
+
+### Login Correct
+
+POST {{baseURL}}/auth/login
+Content-Type: application/json
+
+{
+    "name": "Eduard",
+    "password": "hashed_pw_eduard"
+}
+
+### Login wrong password
+
+POST {{baseURL}}/auth/login
+Content-Type: application/json
+
+{
+    "name": "Eduard",
+    "password": "wrong_password"
+}
+
+### Login non-existing user
+
+POST {{baseURL}}/auth/login
+Content-Type: application/json
+
+{
+    "name": "NonExistingUser",
+    "password": "wrong_password"
+}
