@@ -1,0 +1,42 @@
+﻿@page "/writepost"
+@using DTOs
+@using static Utils.Functional
+@using Microsoft.JSInterop
+@inject BlazorApp.Services.IPostService PostService
+@inject IJSRuntime JS
+
+<h3>Write Post</h3>
+
+<div class="mb-3">
+    <label for="postTitle" class="form-label">Title:</label>
+    <input type="text" class="form-control" id="postTitle" @bind="PostTitle" />
+    <label for="postContent" class="form-label">Content:</label>
+    <input type="text" class="form-control" id="postContent" @bind="PostContent" />
+    <label for="postAuthorId" class="form-label">AuthorId:</label>
+    <input type="text" class="form-control" id="postAuthorId" @bind="PostAuthorId" />
+</div>
+<button class="btn btn-primary" @onclick="CreatePost">Create Post</button>
+
+@code {
+    public string PostTitle { get; set; } = string.Empty;
+    public string PostContent { get; set; } = string.Empty;
+    public int PostAuthorId { get; set; } = 1;
+
+    private async Task CreatePost()
+    {
+        CreatePostDTO newPost = new CreatePostDTO(PostTitle, PostContent, AuthorId: PostAuthorId);
+        try
+        {
+            await PostService.AddPostAsync(newPost);
+            await JS.InvokeVoidAsync(identifier: "alert", "Post created successfully!");
+            // Clear the form
+            PostTitle = string.Empty;
+            PostContent = string.Empty;
+            PostAuthorId = 1;
+        }
+        catch (Exception ex)
+        {
+            await JS.InvokeVoidAsync("alert", $"Error creating post: {ex.Message}");
+        }
+    }
+}
