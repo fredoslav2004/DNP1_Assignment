@@ -43,7 +43,7 @@ public static class Functional
 
         public T GetValue()
         {
-            if(HasValue())
+            if (HasValue())
             {
                 return Resource!;
             }
@@ -51,6 +51,11 @@ public static class Functional
             {
                 throw new InvalidOperationException("Resource does not have a valid value.");
             }
+        }
+        
+        public bool HasError()
+        {
+            return Error != null;
         }
     }
 }

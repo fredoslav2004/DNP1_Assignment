@@ -1,0 +1,79 @@
+﻿@page "/posts/{id:int}"
+@using DTOs
+@using static Utils.Functional
+@inject BlazorApp.Services.IPostService PostService
+@inject BlazorApp.Services.IUserService UserService
+
+@if (PostInfo.HasValue())
+{
+    <h1>[@(PostInfo.GetValue().Id)] @PostInfo.GetValue().Title @GetWrittenByText()</h1>
+    @if(AuthorInfo.HasError())
+    {
+        <p class="text-danger">Error loading author info: @AuthorInfo.Error!.Message</p>
+    }
+    <p>@PostInfo.GetValue().Content</p>
+}
+else if (!PostInfo.IsLoading)
+{
+    <h1>Post not found</h1>
+    @if (PostInfo.Error != null)
+    {
+        <p class="text-danger">Error: @PostInfo.Error.Message</p>
+    }
+}
+else
+{
+    <h1>User @id</h1>
+    <p>Loading user information...</p>
+}
+
+@code {
+    [Parameter]
+    public int? id { get; set; }
+    public AsyncResource<PostDTO> PostInfo { get; set; } = new AsyncResource<PostDTO>();
+    public AsyncResource<UserInfoDTO> AuthorInfo { get; set; } = new AsyncResource<UserInfoDTO>();
+
+    public string GetWrittenByText()
+    {
+        if (AuthorInfo.HasValue())
+        {
+            return $"(written by {AuthorInfo.GetValue().Name})";
+        }
+        else
+        {
+            return string.Empty;
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (id.HasValue)
+        {
+            try
+            {
+                PostInfo.SetValue(await PostService.GetPostAsync(id.Value));
+                await LoadAuthorInfo(PostInfo.GetValue().AuthorId);
+            }
+            catch (Exception ex)
+            {
+                PostInfo.SetError(ex);
+            }
+        }
+        else
+        {
+            PostInfo.SetInvalid("No post ID provided.");
+        }
+    }
+
+    private async Task LoadAuthorInfo(int authorId)
+    {
+        try
+        {
+            AuthorInfo.SetValue(await UserService.GetUserAsync(authorId));
+        }
+        catch (Exception ex)
+        {
+            AuthorInfo.SetError(ex);
+        }
+    }
+}
