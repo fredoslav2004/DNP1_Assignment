@@ -2,6 +2,7 @@
 @using BlazorApp.Auth
 @inject AuthenticationStateProvider AuthProvider
 @inject NavigationManager navMgr
+@inject Microsoft.JSInterop.IJSRuntime JS
 
 <h3>Profile</h3>
 
@@ -12,12 +13,6 @@
         <input type="text" @bind="userName" />
         <label>Password:</label>
         <input type="password" @bind="password" />
-        @if (!string.IsNullOrEmpty(errorLabel))
-        {
-            <label style="color: red">
-                @errorLabel
-            </label>
-        }
         <button @onclick="LoginAsync">Log in</button>
     </NotAuthorized>
     <Authorized>
@@ -29,11 +24,9 @@
 @code {
     private string userName;
     private string password;
-    private string errorLabel;
 
     private async Task LoginAsync()
     {
-        errorLabel = "";
         try
         {
             await ((SimpleAuthProvider)AuthProvider).Login(userName, password);
@@ -42,7 +35,7 @@
         catch (Exception e)
         {
             Console.WriteLine(e);
-            errorLabel = $"Error: {e.Message}";
+            await JS.InvokeVoidAsync("alert", $"Error: {e.Message}");
         }
     }
 }

@@ -4,6 +4,7 @@
 @using Microsoft.JSInterop
 @inject BlazorApp.Services.IPostService PostService
 @inject IJSRuntime JS
+@inject BlazorApp.Services.ClaimService ClaimService
 
 <h3>Write Post</h3>
 
@@ -12,19 +13,23 @@
     <input type="text" class="form-control" id="postTitle" @bind="PostTitle" />
     <label for="postContent" class="form-label">Content:</label>
     <input type="text" class="form-control" id="postContent" @bind="PostContent" />
-    <label for="postAuthorId" class="form-label">AuthorId:</label>
-    <input type="text" class="form-control" id="postAuthorId" @bind="PostAuthorId" />
 </div>
 <button class="btn btn-primary" @onclick="CreatePost">Create Post</button>
 
 @code {
     public string PostTitle { get; set; } = string.Empty;
     public string PostContent { get; set; } = string.Empty;
-    public int PostAuthorId { get; set; } = 1;
 
     private async Task CreatePost()
     {
-        CreatePostDTO newPost = new CreatePostDTO(PostTitle, PostContent, AuthorId: PostAuthorId);
+        int? PostAuthorId = await ClaimService.GetUserId();
+        if (PostAuthorId == null || PostAuthorId < 0)
+        {
+            await JS.InvokeVoidAsync("alert", "Error: Unable to determine author. Please log in.");
+            return;
+        }
+        int PostAuthorIdValue = PostAuthorId.Value;
+        CreatePostDTO newPost = new CreatePostDTO(PostTitle, PostContent, AuthorId: PostAuthorIdValue);
         try
         {
             await PostService.AddPostAsync(newPost);

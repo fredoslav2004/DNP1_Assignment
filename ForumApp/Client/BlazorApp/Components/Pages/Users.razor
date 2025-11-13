@@ -4,6 +4,7 @@
 @using Microsoft.JSInterop
 @inject BlazorApp.Services.IUserService UserService
 @inject IJSRuntime JS
+@attribute [Authorize(Roles = "Admin")]
 
 <h1>Add User:</h1>
 <!-- Add User Form (input for name, password, button for create) -->

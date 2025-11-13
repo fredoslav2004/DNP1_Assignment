@@ -47,6 +47,10 @@ public class SimpleAuthProvider : AuthenticationStateProvider
             new(ClaimTypes.Name, userDto.Name),
             new(ClaimTypes.NameIdentifier, userDto.Id.ToString()),
         ];
+        if (string.Equals(userDto.Name, "Eduard", StringComparison.OrdinalIgnoreCase))
+        {
+            claims.Add(new Claim(ClaimTypes.Role, "Admin"));
+        }
         ClaimsIdentity identity = new(claims, "apiauth");
         ClaimsPrincipal claimsPrincipal = new(identity);
         return new AuthenticationState(claimsPrincipal);
@@ -78,6 +82,11 @@ public class SimpleAuthProvider : AuthenticationStateProvider
             // new Claim("Role", userDto.Role)
             // new Claim("Email", userDto.Email)
         ];
+
+        if (string.Equals(userDto.Name, "Eduard", StringComparison.OrdinalIgnoreCase))
+        {
+            claims.Add(new Claim(ClaimTypes.Role, "Admin"));
+        }
 
         ClaimsIdentity identity = new(claims, "apiauth");
         currentClaimsPrincipal = new ClaimsPrincipal(identity);

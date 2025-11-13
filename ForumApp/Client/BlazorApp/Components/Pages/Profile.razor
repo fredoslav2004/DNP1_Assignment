@@ -1,0 +1,60 @@
+﻿@page "/profile"
+@using BlazorApp.Auth
+@using BlazorApp.Services
+@using System.Security.Claims
+@using static Utils.Functional
+@inject AuthenticationStateProvider AuthProvider
+@inject NavigationManager navMgr
+@inject BlazorApp.Services.ClaimService ClaimService
+
+<h1>Profile</h1>
+
+<AuthorizeView>
+    <NotAuthorized>
+        <h3>Please login</h3>
+        <label>User name:</label>
+        <input type="text" @bind="userName" />
+        <label>Password:</label>
+        <input type="password" @bind="password" />
+        @if (!string.IsNullOrEmpty(errorLabel))
+        {
+            <label style="color: red">
+                @errorLabel
+            </label>
+        }
+        <button @onclick="LoginAsync">Log in</button>
+    </NotAuthorized>
+    <Authorized>
+        <h2>[@(ClaimService.GetClaimValue<int?>(context.User.Claims, ClaimTypes.NameIdentifier))]
+            @(ClaimService.GetClaimValue<string>(context.User.Claims, ClaimTypes.Name))</h2>
+        <button @onclick="LogoutAsync">Log out</button>
+    </Authorized>
+</AuthorizeView>
+
+
+@code {
+    private string? userName;
+    private string? password;
+    private string? errorLabel;
+
+    private async Task LoginAsync()
+    {
+        errorLabel = "";
+        try
+        {
+            await ((SimpleAuthProvider)AuthProvider).Login(userName!, password!);
+            navMgr.NavigateTo("/");
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            errorLabel = $"Error: {e.Message}";
+        }
+    }
+
+    private async Task LogoutAsync()
+    {
+        await ((SimpleAuthProvider)AuthProvider).Logout();
+        navMgr.NavigateTo("/");
+    }
+}
