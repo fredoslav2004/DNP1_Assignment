@@ -1,6 +1,7 @@
 ﻿@page "/"
 @using DTOs
 @using static Utils.Functional
+@inject NavigationManager NavMgr
 @inject BlazorApp.Services.IPostService PostService
 
 <PageTitle>Home</PageTitle>
@@ -9,40 +10,48 @@
 
 <p>Welcome to the Forum App. This is your go-to place for brainrot, doomscrolling and all things internet forums. </p>
 
-<h2>Feed:</h2>
+<AuthorizeView>
+    <NotAuthorized>
+        <p>We don't know you. Please <a href="/login">log in</a>.</p>
+        <button @onclick='() => NavMgr.NavigateTo("login")'>go to login</button>
+    </NotAuthorized>
+    <Authorized>
+        <h2>Feed:</h2>
 
-@if (Posts.HasValue())
-{
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Name</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var post in Posts.GetValue())
+        @if (Posts.HasValue())
+        {
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Name</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var post in Posts.GetValue())
+                    {
+                        <tr>
+                            <td>@post.Id</td>
+                            <td><a href="@($"/posts/{post.Id}")">@post.Title</a></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else if (!Posts.IsLoading)
+        {
+            <h2>No users found</h2>
+            @if (Posts.Error != null)
             {
-                <tr>
-                    <td>@post.Id</td>
-                    <td><a href="@($"/posts/{post.Id}")">@post.Title</a></td>
-                </tr>
+                <p class="text-danger">Error: @Posts.Error.Message</p>
             }
-        </tbody>
-    </table>
-}
-else if (!Posts.IsLoading)
-{
-    <h2>No users found</h2>
-    @if (Posts.Error != null)
-    {
-        <p class="text-danger">Error: @Posts.Error.Message</p>
-    }
-}
-else
-{
-    <p>Loading your feed...</p>
-}
+        }
+        else
+        {
+            <p>Loading your feed...</p>
+        }
+    </Authorized>
+</AuthorizeView>
 
 @code {
     public AsyncResource<List<PostDTO>> Posts { get; set; } = new AsyncResource<List<PostDTO>>();

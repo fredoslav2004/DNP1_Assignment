@@ -1,16 +1,19 @@
 ﻿@page "/posts/{id:int}"
 @using DTOs
 @using static Utils.Functional
+@using Utils
 @using Microsoft.JSInterop
+@using System.Security.Claims
 @inject BlazorApp.Services.IPostService PostService
 @inject BlazorApp.Services.IUserService UserService
 @inject BlazorApp.Services.ICommentService CommentService
 @inject IJSRuntime JS
+@inject BlazorApp.Services.ClaimService ClaimService
 
 @if (PostInfo.HasValue())
 {
     <h1>[@(PostInfo.GetValue().Id)] @PostInfo.GetValue().Title @GetWrittenByText()</h1>
-    @if(AuthorInfo.HasError())
+    @if (AuthorInfo.HasError())
     {
         <p class="text-danger">Error loading author info: @AuthorInfo.Error!.Message</p>
     }
@@ -79,8 +82,6 @@ else
 <div class="mb-3">
     <label for="postContent" class="form-label">Content:</label>
     <input type="text" class="form-control" id="postContent" @bind="NewCommentContent" />
-    <label for="postAuthorId" class="form-label">AuthorId:</label>
-    <input type="text" class="form-control" id="postAuthorId" @bind="NewCommentAuthorId" />
 </div>
 <button class="btn btn-primary" @onclick="CreateComment">Create Comment</button>
 
@@ -92,6 +93,10 @@ else
     public AsyncResource<List<CommentViewModel>> CommentsInfo { get; set; } = new AsyncResource<List<CommentViewModel>>();
     public string NewCommentContent { get; set; } = string.Empty;
     public int NewCommentAuthorId { get; set; } = 1;
+
+    
+    private int? userId;
+    private string? userName;
 
     public string GetWrittenByText()
     {
@@ -123,6 +128,17 @@ else
         else
         {
             PostInfo.SetInvalid("No post ID provided.");
+        }
+        var claimValues = await ClaimService.GetClaimValues();
+        if (claimValues.HasValue())
+        {
+            userId = claimValues.GetValue().UserId;
+            userName = claimValues.GetValue().Name;
+        }
+        else
+        {
+            userId = -1;
+            userName = null;
         }
     }
 
@@ -193,11 +209,21 @@ else
 
     private async Task CreateComment()
     {
+        if (userId < 0)
+        {
+            await JS.InvokeVoidAsync("alert", "You must be logged in to create a comment.");
+            return;
+        }
+        if (string.IsNullOrWhiteSpace(NewCommentContent))
+        {
+            await JS.InvokeVoidAsync("alert", "Comment content cannot be empty.");
+            return;
+        }
         if (id.HasValue)
         {
             try
             {
-                var newComment = new CreateCommentDTO(NewCommentAuthorId, id.Value, NewCommentContent);
+                var newComment = new CreateCommentDTO(userId!.Value, id.Value, NewCommentContent);
                 await CommentService.AddCommentAsync(newComment);
                 NewCommentContent = string.Empty;
                 NewCommentAuthorId = 1;

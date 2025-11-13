@@ -58,4 +58,41 @@ public static class Functional
             return Error != null;
         }
     }
+
+    public class Maybe<T>
+    {
+        readonly T? Value;
+        public Maybe(T? value)
+        {
+            Value = value;
+        }
+        public bool HasValue()
+        {
+            return Value != null;
+        }
+        public static Maybe<T> None => new(default);
+        public static implicit operator Maybe<T>(T? value) => new(value);
+        public static Maybe<T> Some(T value) => new(value);
+        public T GetValueOrThrow()
+        {
+            if (Value == null)
+            {
+                throw new InvalidOperationException("No value present");
+            }
+            return Value;
+        }
+        public T GetValue() => GetValueOrThrow();
+    }
+
+    public static R BranchOnCondition<T, R>(this T value, Func<T, bool> condition, Func<T, R> ifTrue, Func<T, R> ifFalse)
+    {
+        if (condition(value))
+        {
+            return ifTrue(value);
+        }
+        else
+        {
+            return ifFalse(value);
+        }
+    }
 }
