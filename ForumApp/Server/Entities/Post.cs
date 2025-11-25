@@ -5,7 +5,9 @@ public class Post : IIdentifiable
     public int Id { get; set; }
     public required string Title { get; set; }
     public required string Content { get; set; }
+    public virtual User Author { get; set; } = null!;
     public int AuthorId { get; set; }
+    public Post() { }
     public static Post GetDummy()
     {
         var rnd = new Random();

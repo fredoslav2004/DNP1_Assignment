@@ -3,9 +3,12 @@ namespace Entities;
 public class Comment : IIdentifiable
 {
     public int Id { get; set; }
+    public virtual User Author { get; set; } = null!;
     public int AuthorId { get; set; }
+    public virtual Post Post { get; set; } = null!;
     public int PostId { get; set; }
     public required string Content { get; set; }
+    public Comment() { }
     public static Comment GetDummy()
     {
         var rnd = new Random();

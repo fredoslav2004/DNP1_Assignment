@@ -1,3 +1,4 @@
+using EfcRepositories;
 using Entities;
 using FileRepositories;
 using InMemoryRepositories;
@@ -14,9 +15,10 @@ builder.Services.AddOpenApi();
 
 builder.Services.AddEndpointsApiExplorer();
 
-builder.Services.AddScoped<IRepository<Post>>(sp => new FileRepository<Post>("posts"));
-builder.Services.AddScoped<IRepository<User>>(sp => new FileRepository<User>("users"));
-builder.Services.AddScoped<IRepository<Comment>>(sp => new FileRepository<Comment>("comments"));
+builder.Services.AddScoped<IRepository<Post>, EfcRepository<Post>>();
+builder.Services.AddScoped<IRepository<User>, EfcRepository<User>>();
+builder.Services.AddScoped<IRepository<Comment>, EfcRepository<Comment>>();
+builder.Services.AddDbContext<EfcRepositories.AppContext>();
 
 var app = builder.Build();
 
