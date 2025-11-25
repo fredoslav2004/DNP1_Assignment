@@ -2,6 +2,7 @@ using DTOs;
 using Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using RepositoryContracts;
 
 namespace WebAPI.Controllers
@@ -21,15 +22,18 @@ namespace WebAPI.Controllers
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<CommentDTO>> GetComments([FromQuery] int? writtenByID = null, [FromQuery] string? writtenByName = null, [FromQuery] string? contentContains = null, [FromQuery] int? postId = null)
+        public async Task<ActionResult<IEnumerable<CommentDTO>>> GetComments([FromQuery] int? writtenByID = null, [FromQuery] string? writtenByName = null, [FromQuery] string? contentContains = null, [FromQuery] int? postId = null)
         {
-            var comments = commentRepo.GetMany();
-            comments = comments.Where(comment =>
+            var commentsQuery = commentRepo.GetMany();
+            commentsQuery = commentsQuery.Where(comment =>
                 (writtenByID == null || comment.AuthorId == writtenByID) &&
                 (writtenByName == null || userRepo.GetMany().Any(user => user.Id == comment.AuthorId && user.Name.Contains(writtenByName, StringComparison.OrdinalIgnoreCase))) &&
                 (contentContains == null || comment.Content.Contains(contentContains, StringComparison.OrdinalIgnoreCase)) &&
                 (postId == null || comment.PostId == postId)
             );
+
+            var comments = await commentsQuery.ToListAsync();
+
             return comments == null ? NotFound() : Ok(comments.Select(comment => comment.ToDTO()));
         }
 

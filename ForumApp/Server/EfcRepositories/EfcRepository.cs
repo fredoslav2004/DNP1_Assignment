@@ -18,7 +18,8 @@ public class EfcRepository<T>(AppContext context) : IRepository<T> where T : cla
 
     public async Task ClearAsync()
     {
-
+        ctx.Set<T>().RemoveRange(ctx.Set<T>());
+        await ctx.SaveChangesAsync();
     }
 
     public async Task DeleteAsync(int id)

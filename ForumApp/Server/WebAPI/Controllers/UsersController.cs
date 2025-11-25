@@ -2,6 +2,7 @@ using DTOs;
 using Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using RepositoryContracts;
 
 namespace WebAPI.Controllers
@@ -20,10 +21,11 @@ namespace WebAPI.Controllers
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<UserInfoDTO>> GetUserInfos([FromQuery] string? nameContains = null)
+        public async Task<ActionResult<IEnumerable<UserInfoDTO>>> GetUserInfosAsync([FromQuery] string? nameContains = null)
         {
-            var users = userRepo.GetMany();
-            users = users.Where(user => nameContains == null || user.Name.Contains(nameContains, StringComparison.OrdinalIgnoreCase));
+            var usersQuery = userRepo.GetMany();
+            usersQuery = usersQuery.Where(user => nameContains == null || user.Name.Contains(nameContains, StringComparison.OrdinalIgnoreCase));
+            var users = await usersQuery.ToListAsync();
             return users == null ? NotFound() : Ok(users.Select(user => user.ToUserInfoDTO()));
         }
 

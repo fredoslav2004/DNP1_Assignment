@@ -20,6 +20,9 @@ GET {{baseURL}}/posts
 ###
 GET {{baseURL}}/posts/1
 
+### Full
+GET {{baseURL}}/posts/1/full
+
 
 ###
 GET {{baseURL}}/posts?sortByCommentCount=true

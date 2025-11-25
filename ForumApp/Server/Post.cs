@@ -1,6 +1,0 @@
-namespace Entities;
-
-class Post
-{
-    
-}

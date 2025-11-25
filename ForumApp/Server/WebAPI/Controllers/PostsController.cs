@@ -2,6 +2,7 @@ using DTOs;
 using Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using RepositoryContracts;
 
 namespace WebAPI.Controllers
@@ -21,27 +22,46 @@ namespace WebAPI.Controllers
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<PostDTO>> GetPosts([FromQuery] string? titleContains = null, [FromQuery] int? writtenByID = null, [FromQuery] bool sortByCommentCount = false)
+        public async Task<ActionResult<IEnumerable<PostDTO>>> GetPosts([FromQuery] string? titleContains = null, [FromQuery] int? writtenByID = null, [FromQuery] bool sortByCommentCount = false)
         {
-            var posts = postRepo.GetMany();
+            var postsQuery = postRepo.GetMany();
 
-            posts = posts.
-                        Where(post => titleContains == null || post.Title.Contains(titleContains, StringComparison.OrdinalIgnoreCase) 
+            postsQuery = postsQuery.
+                        Where(post => titleContains == null || post.Title.Contains(titleContains, StringComparison.OrdinalIgnoreCase)
                         && (writtenByID == null || post.AuthorId == writtenByID));
 
             if (sortByCommentCount)
             {
-                posts = posts.OrderByDescending(post => commentRepo.GetMany().Count(comment => comment.PostId == post.Id));
+                postsQuery = postsQuery.OrderByDescending(post => commentRepo.GetMany().Count(comment => comment.PostId == post.Id));
             }
+
+            var posts = await postsQuery.ToListAsync();
 
             return posts == null ? NotFound() : Ok(posts.Select(post => post.ToDTO()));
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<PostDTO>> GetPost(int id)
+        public async Task<ActionResult<PostDTO>> GetPostOld(int id)
         {
             Post post = await postRepo.GetSingleAsync(id);
             return post == null ? NotFound() : Ok(post.ToDTO());
+        }
+
+        [HttpGet("{id}/full")]
+        public async Task<ActionResult<PostFullDTO>> GetPost(int id)
+        {
+            var postQuery = postRepo.GetMany().Where(p => p.Id == id).AsQueryable(); // AsQueryable basically not needed
+            postQuery = postQuery.Include(p => p.Author);
+            postQuery = postQuery.Include(p => p.Comments);
+            PostFullDTO? post = await postQuery.Select(p =>
+            new PostFullDTO(
+                p.Id,
+                p.Title,
+                p.Content,
+                new UserInfoDTO(p.Author.Id, p.Author.Name),
+                p.Comments.Select(c => new CommentDTO(c.Id, c.AuthorId, c.PostId, c.Content)).ToList()
+            )).SingleOrDefaultAsync();
+            return post == null ? NotFound() : Ok(post);
         }
 
         [HttpPut("{id}")]
